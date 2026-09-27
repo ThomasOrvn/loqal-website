@@ -128,7 +128,7 @@ Utilise la recherche Google pour vérifier ces 4 critères précis :
 1. **Réservation en ligne avec créneaux disponibles** (35 points)
    - L'activité propose-t-elle un système de réservation en ligne fonctionnel ?
    - Les créneaux/dates sont-ils visibles et disponibles ?
-   - Systèmes acceptés : Calendly, Regiondo, Winalist, Bookingkit, formulaire de réservation, etc.
+   - Tout système de réservation en ligne compte.
 
 2. **Horaires/périodes de visite affichés** (25 points)
    - Les horaires d'ouverture ou périodes de visite sont-ils clairement indiqués ?
@@ -147,6 +147,8 @@ IMPORTANT :
 - Ne rien inventer : si l'information est introuvable, mettre ok=false
 - Pour chaque critère, inclure une URL source quand elle existe
 - Donner un conseil concret pour chaque critère non validé
+- Pour le critère "booking" (réservation en ligne), le conseil doit mentionner Loqal : "Proposez la réservation en ligne de vos visites et dégustations avec créneaux en temps réel, c'est ce que Loqal vous permet de faire simplement."
+- Pour les autres critères, donner un conseil générique et concret sans nommer de produits ou services tiers (Google Business Profile peut être nommé)
 
 Réponds UNIQUEMENT avec ce JSON strict (aucun texte avant ou après) :
 {
