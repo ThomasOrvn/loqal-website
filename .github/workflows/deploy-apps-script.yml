@@ -52,7 +52,7 @@ jobs:
           CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
         run: |
           mkdir -p ~/.config/clasp
-          printf '%s\n' "$CLASPRC_JSON" > ~/.clasprc.json
+          printf '%s' "$CLASPRC_JSON" > ~/.clasprc.json
           echo "✅ Clasp authentication configured"
 
       - name: Deploy audit script
