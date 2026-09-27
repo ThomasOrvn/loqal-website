@@ -301,9 +301,31 @@ const { waitlist } = siteData;
   tabVisitor?.addEventListener('click', () => switchTab('visitor'));
   tabPro?.addEventListener('click', () => switchTab('pro'));
 
-  // Listen for tab switch event from Hero CTAs
+  // Listen for tab switch event from Hero CTAs or Audit
   window.addEventListener('switchWaitlistTab', ((e: CustomEvent) => {
     switchTab(e.detail.tab);
+    
+    // Pre-fill pro form if data is provided (from audit)
+    if (e.detail.prefillData && e.detail.tab === 'pro') {
+      const data = e.detail.prefillData;
+      const form = document.getElementById('form-pro') as HTMLFormElement;
+      
+      if (form && data.activityName) {
+        const nameInput = form.querySelector('input[name="name"]') as HTMLInputElement;
+        const activityInput = form.querySelector('input[name="activityName"]') as HTMLInputElement;
+        const cityInput = form.querySelector('input[name="city"]') as HTMLInputElement;
+        
+        if (nameInput && data.activityName) {
+          nameInput.value = data.activityName;
+        }
+        if (activityInput && data.activityName) {
+          activityInput.value = data.activityName;
+        }
+        if (cityInput && data.city) {
+          cityInput.value = data.city;
+        }
+      }
+    }
   }) as EventListener);
 
   // Form submissions

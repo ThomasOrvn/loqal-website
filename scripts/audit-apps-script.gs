@@ -1,91 +1,295 @@
 /**
- * Script Google Apps Script pour l'audit de réservabilité Loqal
+ * Script Google Apps Script pour l'audit de réservabilité Loqal avec Gemini AI
  * 
- * Analyse un site web pour déterminer sa « réservabilité » :
- * - Bouton de réservation en ligne (35 pts)
- * - Horaires affichés (25 pts)
- * - Site optimisé mobile (20 pts)
- * - Fiche Google complète (20 pts)
+ * Utilise l'API Gemini avec l'outil de recherche Google (grounding) pour analyser
+ * la réservabilité d'une activité professionnelle.
  * 
- * Déployez ce script en tant qu'application web avec :
- * - Exécuter en tant que : Moi
- * - Qui a accès : Tout le monde
- * 
- * Copiez l'URL de déploiement dans PUBLIC_AUDIT_ENDPOINT
+ * Configuration requise :
+ * 1. Créer une clé API Gemini sur Google AI Studio (https://aistudio.google.com/app/apikey)
+ * 2. Dans le script : Projet > Propriétés > Propriétés du script
+ *    Ajouter : GEMINI_API_KEY = votre_clé_api
+ * 3. Déployer : Déployer > Nouveau déploiement > Application Web
+ *    - Exécuter en tant que : Moi
+ *    - Qui a accès : Tout le monde
  */
 
-/**
- * Gère les requêtes GET (pour les redirections)
- */
-function doGet(e) {
-  return ContentService.createTextOutput(
-    JSON.stringify({ error: 'Utilisez POST pour soumettre un audit' })
-  ).setMimeType(ContentService.MimeType.TEXT);
-}
+// Configuration
+const GEMINI_MODEL = 'gemini-1.5-flash-latest'; // ou gemini-1.5-pro-latest pour plus de précision
+const MAX_AUDITS_PER_HOUR = 20; // Limite anti-abus
+const CACHE_DURATION_HOURS = 24; // Cache des résultats
 
 /**
  * Gère les requêtes POST pour l'audit
  */
 function doPost(e) {
   try {
-    // Parse les paramètres
     const params = e.parameter;
-    const url = params.url;
-    const googleComplete = params.googleComplete === 'yes';
+    const activityName = params.activityName;
+    const city = params.city;
+    const url = params.url || '';
 
-    // Validation de l'URL
-    if (!url) {
-      return createResponse({ error: 'URL manquante' });
+    // Validation
+    if (!activityName || !city) {
+      return createResponse({ error: 'Nom de l\'activité et ville requis' });
     }
 
-    // Refuse les IPs privées et localhost
-    if (isPrivateUrl(url)) {
+    // Anti-abus : vérifier le nombre d'audits
+    if (!checkRateLimit()) {
+      return createResponse({ 
+        error: 'Limite d\'audits atteinte. Veuillez réessayer dans une heure.' 
+      });
+    }
+
+    // Vérifier le cache
+    const cacheKey = getCacheKey(activityName, city);
+    const cached = getCachedResult(cacheKey);
+    if (cached) {
+      return createResponse(cached);
+    }
+
+    // Vérifier l'URL si fournie
+    if (url && isPrivateUrl(url)) {
       return createResponse({ error: 'Les URLs locales ou privées ne sont pas autorisées' });
     }
 
-    // Fetch le site web
-    const html = fetchWebsite(url);
-    if (!html) {
-      return createResponse({ error: 'Impossible de récupérer le site web' });
+    // Récupérer des indices du site si URL fournie
+    let siteHints = null;
+    if (url) {
+      try {
+        siteHints = fetchSiteHints(url);
+      } catch (error) {
+        console.warn('Erreur lors de la récupération du site:', error);
+        // Continue sans les indices du site
+      }
     }
 
-    // Analyse les critères
-    const criteria = analyzeCriteria(html, url, googleComplete);
+    // Appeler l'API Gemini
+    const result = callGeminiAudit(activityName, city, url, siteHints);
     
-    // Calcule le score total
-    const score = criteria.reduce((sum, c) => sum + (c.ok ? c.points : 0), 0);
+    if (result.error) {
+      return createResponse({ error: result.error });
+    }
 
-    // Enregistre l'audit dans la feuille Google (optionnel)
+    // Mettre en cache
+    cacheResult(cacheKey, result);
+
+    // Enregistrer l'audit
     try {
-      logAudit(url, score, criteria);
+      logAudit(activityName, city, url, result.score);
     } catch (logError) {
       console.error('Erreur lors de l\'enregistrement:', logError);
-      // Continue même si l'enregistrement échoue
     }
 
-    // Retourne le résultat
-    return createResponse({ score, criteria });
+    return createResponse(result);
 
   } catch (error) {
     console.error('Erreur dans doPost:', error);
     return createResponse({ 
-      error: 'Une erreur est survenue lors de l\'analyse',
+      error: 'Une erreur est survenue lors de l\'analyse. Veuillez réessayer.',
       details: error.toString()
     });
   }
 }
 
 /**
- * Fetch le contenu HTML d'un site web
+ * Appelle l'API Gemini pour analyser la réservabilité
  */
-function fetchWebsite(url) {
+function callGeminiAudit(activityName, city, url, siteHints) {
+  const apiKey = PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');
+  
+  if (!apiKey) {
+    return { error: 'Clé API Gemini non configurée. Contactez l\'administrateur.' };
+  }
+
+  // Construction du prompt
+  let prompt = `Tu es un expert en réservabilité et en présence en ligne pour les activités du terroir français.
+
+Analyse la réservabilité de cette activité :
+- Nom : ${activityName}
+- Ville : ${city}`;
+
+  if (url) {
+    prompt += `\n- Site web : ${url}`;
+  }
+
+  if (siteHints) {
+    prompt += `\n\nIndices techniques du site web :\n${JSON.stringify(siteHints, null, 2)}`;
+  }
+
+  prompt += `
+
+Utilise la recherche Google pour vérifier ces 4 critères précis :
+
+1. **Réservation en ligne avec créneaux disponibles** (35 points)
+   - L'activité propose-t-elle un système de réservation en ligne fonctionnel ?
+   - Les créneaux/dates sont-ils visibles et disponibles ?
+   - Systèmes acceptés : Calendly, Regiondo, Winalist, Bookingkit, formulaire de réservation, etc.
+
+2. **Horaires/périodes de visite affichés** (25 points)
+   - Les horaires d'ouverture ou périodes de visite sont-ils clairement indiqués ?
+   - Sur le site web ou la fiche Google Business ?
+
+3. **Site adapté au mobile** (20 points)
+   - Le site web est-il optimisé pour mobile (responsive) ?
+   - Utilise-t-il HTTPS ?
+
+4. **Fiche Google Business complète avec horaires et photos** (20 points)
+   - La fiche Google Business Profile existe-t-elle ?
+   - Contient-elle les horaires ?
+   - Contient-elle des photos de qualité ?
+
+IMPORTANT :
+- Ne rien inventer : si l'information est introuvable, mettre ok=false
+- Pour chaque critère, inclure une URL source quand elle existe
+- Donner un conseil concret pour chaque critère non validé
+
+Réponds UNIQUEMENT avec ce JSON strict (aucun texte avant ou après) :
+{
+  "score": <somme des points ok>,
+  "criteria": [
+    {
+      "id": "booking",
+      "label": "Réservation en ligne avec créneaux disponibles",
+      "ok": true/false,
+      "points": 35,
+      "conseil": "conseil si ok=false",
+      "source": "URL source ou vide"
+    },
+    {
+      "id": "hours",
+      "label": "Horaires/périodes de visite affichés",
+      "ok": true/false,
+      "points": 25,
+      "conseil": "conseil si ok=false",
+      "source": "URL source ou vide"
+    },
+    {
+      "id": "mobile",
+      "label": "Site adapté au mobile",
+      "ok": true/false,
+      "points": 20,
+      "conseil": "conseil si ok=false",
+      "source": "URL source ou vide"
+    },
+    {
+      "id": "google",
+      "label": "Fiche Google Business complète avec horaires et photos",
+      "ok": true/false,
+      "points": 20,
+      "conseil": "conseil si ok=false",
+      "source": "URL source ou vide"
+    }
+  ]
+}`;
+
+  // Appel API Gemini avec grounding
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
+  
+  const payload = {
+    contents: [{
+      parts: [{
+        text: prompt
+      }]
+    }],
+    tools: [{
+      googleSearchRetrieval: {
+        dynamicRetrievalConfig: {
+          mode: "MODE_DYNAMIC",
+          dynamicThreshold: 0.3
+        }
+      }
+    }],
+    generationConfig: {
+      temperature: 0.2,
+      topP: 0.8,
+      topK: 40
+    }
+  };
+
+  try {
+    const response = UrlFetchApp.fetch(apiUrl, {
+      method: 'post',
+      contentType: 'application/json',
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true
+    });
+
+    const responseCode = response.getResponseCode();
+    if (responseCode !== 200) {
+      console.error('Erreur API Gemini:', response.getContentText());
+      return { error: 'Erreur lors de l\'analyse IA. Veuillez réessayer.' };
+    }
+
+    const data = JSON.parse(response.getContentText());
+    
+    if (!data.candidates || data.candidates.length === 0) {
+      return { error: 'Aucune réponse de l\'IA. Veuillez réessayer.' };
+    }
+
+    const textContent = data.candidates[0].content.parts[0].text;
+    
+    // Parser le JSON de la réponse
+    const result = parseGeminiResponse(textContent);
+    
+    return result;
+
+  } catch (error) {
+    console.error('Erreur appel Gemini:', error);
+    return { error: 'Erreur lors de l\'analyse IA. Veuillez réessayer.' };
+  }
+}
+
+/**
+ * Parse la réponse de Gemini et extrait le JSON
+ */
+function parseGeminiResponse(text) {
+  try {
+    // Extraire le JSON (peut être entouré de ```json ... ```)
+    let jsonText = text.trim();
+    
+    // Retirer les marqueurs de code markdown si présents
+    jsonText = jsonText.replace(/^```json\s*/i, '').replace(/```\s*$/, '');
+    jsonText = jsonText.replace(/^```\s*/, '').replace(/```\s*$/, '');
+    
+    const data = JSON.parse(jsonText);
+    
+    // Validation et recalcul du score
+    if (!data.criteria || !Array.isArray(data.criteria)) {
+      throw new Error('Format de réponse invalide');
+    }
+
+    // Recalculer le score pour être sûr
+    let calculatedScore = 0;
+    data.criteria.forEach(criterion => {
+      if (criterion.ok) {
+        calculatedScore += criterion.points;
+      }
+    });
+
+    data.score = calculatedScore;
+
+    return data;
+
+  } catch (error) {
+    console.error('Erreur parsing:', error, 'Texte:', text);
+    return { 
+      error: 'Impossible d\'analyser la réponse. Veuillez réessayer.',
+      details: error.toString()
+    };
+  }
+}
+
+/**
+ * Récupère des indices techniques du site web si URL fournie
+ */
+function fetchSiteHints(url) {
   try {
     const response = UrlFetchApp.fetch(url, {
       muteHttpExceptions: true,
       followRedirects: true,
       validateHttpsCertificates: false,
       headers: {
-        'User-Agent': 'Loqal-Audit-Bot/1.0'
+        'User-Agent': 'Loqal-Audit-Bot/2.0'
       },
       timeout: 10
     });
@@ -94,246 +298,126 @@ function fetchWebsite(url) {
       return null;
     }
 
-    return response.getContentText();
+    const html = response.getContentText();
+    const htmlLower = html.toLowerCase();
+
+    const hints = {
+      hasHttps: url.toLowerCase().startsWith('https://'),
+      hasViewport: htmlLower.includes('width=device-width'),
+      hasBookingKeywords: false,
+      hasBookingWidgets: false,
+      hasOpeningHours: false,
+      hasGoogleMapsLink: false
+    };
+
+    // Vérifier mots-clés de réservation
+    const bookingKeywords = ['réserv', 'book', 'rendez-vous'];
+    hints.hasBookingKeywords = bookingKeywords.some(kw => htmlLower.includes(kw));
+
+    // Vérifier widgets de réservation
+    const widgets = ['calendly', 'bookingkit', 'regiondo', 'winalist', 'fareharbor', 'rezdy'];
+    hints.hasBookingWidgets = widgets.some(w => htmlLower.includes(w));
+
+    // Vérifier horaires
+    hints.hasOpeningHours = htmlLower.includes('openinghours') || 
+                            htmlLower.includes('openinghoursspecification');
+
+    // Vérifier lien Google
+    hints.hasGoogleMapsLink = htmlLower.includes('google.com/maps') || 
+                              htmlLower.includes('g.page/');
+
+    return hints;
+
   } catch (error) {
-    console.error('Erreur fetch:', error);
+    console.warn('Erreur fetchSiteHints:', error);
     return null;
   }
 }
 
 /**
- * Analyse les critères de réservabilité
+ * Vérifie la limite de taux (rate limiting)
  */
-function analyzeCriteria(html, url, googleComplete) {
-  const criteria = [];
-  const htmlLower = html.toLowerCase();
-
-  // 1. Bouton de réservation en ligne (35 pts)
-  const bookingResult = checkBooking(htmlLower);
-  criteria.push({
-    id: 'booking',
-    label: 'Bouton de réservation en ligne',
-    ok: bookingResult.found,
-    points: 35,
-    conseil: bookingResult.found ? '' : 'Ajoutez un bouton "Réserver" visible et un système de réservation en ligne (Calendly, Regiondo, etc.).'
-  });
-
-  // 2. Horaires affichés (25 pts)
-  const hoursResult = checkHours(html, htmlLower);
-  criteria.push({
-    id: 'hours',
-    label: 'Horaires de visite affichés',
-    ok: hoursResult.found,
-    points: 25,
-    conseil: hoursResult.found ? '' : 'Affichez clairement vos horaires d\'ouverture (jours et heures) sur votre site.'
-  });
-
-  // 3. Site optimisé mobile (20 pts)
-  const mobileResult = checkMobile(html, url);
-  criteria.push({
-    id: 'mobile',
-    label: 'Site optimisé mobile',
-    ok: mobileResult.ok,
-    points: 20,
-    conseil: mobileResult.ok ? '' : mobileResult.conseil
-  });
-
-  // 4. Fiche Google complète (20 pts)
-  const googleResult = checkGoogle(htmlLower, googleComplete);
-  criteria.push({
-    id: 'google',
-    label: 'Fiche Google complète',
-    ok: googleResult.ok,
-    points: 20,
-    conseil: googleResult.ok ? '' : 'Créez et complétez votre fiche Google Business Profile avec horaires, photos et coordonnées.'
-  });
-
-  return criteria;
-}
-
-/**
- * Vérifie la présence de boutons/liens de réservation
- */
-function checkBooking(htmlLower) {
-  // Mots-clés de réservation
-  const bookingKeywords = [
-    'réserver', 'réservation', 'book', 'booking', 'rendez-vous',
-    'prendre rendez-vous', 'je réserve', 'reserver maintenant'
-  ];
-
-  // Widgets de réservation connus
-  const bookingWidgets = [
-    'calendly', 'bookingkit', 'regiondo', 'fareharbor', 'rezdy',
-    'weekendesk', 'zenchef', 'thefork', 'winalist', 'vinotrip',
-    'bookvisit', 'bokun', 'peek.com', 'resabooking', 'bookeo'
-  ];
-
-  // Patterns pour détecter les boutons/liens de réservation
-  const buttonPatterns = [
-    /<a[^>]*href[^>]*>(.*?réserv.*?)<\/a>/gi,
-    /<button[^>]*>(.*?réserv.*?)<\/button>/gi,
-    /<a[^>]*class="[^"]*book[^"]*"[^>]*>/gi,
-    /<button[^>]*class="[^"]*book[^"]*"[^>]*>/gi
-  ];
-
-  // Vérifie les mots-clés dans les liens et boutons
-  for (const keyword of bookingKeywords) {
-    if (htmlLower.includes(keyword)) {
-      // Vérifie que c'est dans un contexte de lien ou bouton
-      const context = htmlLower.indexOf(keyword);
-      const surrounding = htmlLower.substring(Math.max(0, context - 50), context + 50);
-      if (surrounding.includes('<a ') || surrounding.includes('<button') || surrounding.includes('href')) {
-        return { found: true };
-      }
-    }
-  }
-
-  // Vérifie les widgets de réservation
-  for (const widget of bookingWidgets) {
-    if (htmlLower.includes(widget)) {
-      return { found: true };
-    }
-  }
-
-  // Vérifie les iframes de réservation
-  if (htmlLower.includes('<iframe') && 
-      (htmlLower.includes('book') || htmlLower.includes('reserv'))) {
-    return { found: true };
-  }
-
-  return { found: false };
-}
-
-/**
- * Vérifie la présence d'horaires d'ouverture
- */
-function checkHours(html, htmlLower) {
-  // Schema.org openingHours
-  if (htmlLower.includes('openinghours') || 
-      htmlLower.includes('openinghoursspecification')) {
-    return { found: true };
-  }
-
-  // Jours de la semaine
-  const daysPatterns = [
-    'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche',
-    'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday',
-    'lun', 'mar', 'mer', 'jeu', 'ven', 'sam', 'dim'
-  ];
-
-  // Patterns d'horaires
-  const timePatterns = [
-    /\d{1,2}h\d{0,2}/gi,          // 10h, 10h30
-    /\d{1,2}:\d{2}/g,              // 10:00, 14:30
-    /\d{1,2}h\s*-\s*\d{1,2}h/gi,  // 10h - 18h
-    /\d{1,2}:\d{2}\s*-\s*\d{1,2}:\d{2}/g  // 10:00 - 18:00
-  ];
-
-  // Compte les occurrences de jours
-  let dayCount = 0;
-  for (const day of daysPatterns) {
-    if (htmlLower.includes(day)) {
-      dayCount++;
-    }
-  }
-
-  // Compte les occurrences d'horaires
-  let timeCount = 0;
-  for (const pattern of timePatterns) {
-    const matches = html.match(pattern);
-    if (matches) {
-      timeCount += matches.length;
-    }
-  }
-
-  // Si on trouve au moins 3 jours ET au moins 2 horaires, c'est bon
-  if (dayCount >= 3 && timeCount >= 2) {
-    return { found: true };
-  }
-
-  return { found: false };
-}
-
-/**
- * Vérifie l'optimisation mobile et HTTPS
- */
-function checkMobile(html, url) {
-  const htmlLower = html.toLowerCase();
+function checkRateLimit() {
+  const cache = CacheService.getScriptCache();
+  const key = 'audit_count';
+  const count = cache.get(key);
   
-  // Vérifie HTTPS
-  const isHttps = url.toLowerCase().startsWith('https://');
-  
-  // Vérifie la balise viewport
-  const hasViewport = htmlLower.includes('width=device-width') &&
-                      htmlLower.includes('viewport');
-
-  if (!isHttps && !hasViewport) {
-    return { 
-      ok: false, 
-      conseil: 'Passez en HTTPS et ajoutez une balise meta viewport pour l\'optimisation mobile.' 
-    };
-  }
-  
-  if (!isHttps) {
-    return { 
-      ok: false, 
-      conseil: 'Passez votre site en HTTPS pour la sécurité et le référencement.' 
-    };
-  }
-  
-  if (!hasViewport) {
-    return { 
-      ok: false, 
-      conseil: 'Ajoutez la balise <meta name="viewport" content="width=device-width"> pour l\'optimisation mobile.' 
-    };
+  if (!count) {
+    cache.put(key, '1', 3600); // 1 heure
+    return true;
   }
 
-  return { ok: true, conseil: '' };
+  const currentCount = parseInt(count);
+  if (currentCount >= MAX_AUDITS_PER_HOUR) {
+    return false;
+  }
+
+  cache.put(key, (currentCount + 1).toString(), 3600);
+  return true;
 }
 
 /**
- * Vérifie la présence d'une fiche Google
+ * Génère une clé de cache
  */
-function checkGoogle(htmlLower, googleComplete) {
-  // Bonus si un lien Google Maps/Business est présent
-  const hasGoogleLink = htmlLower.includes('google.com/maps') || 
-                        htmlLower.includes('g.page/');
-
-  // Score basé sur la déclaration du pro + bonus si lien trouvé
-  return { ok: googleComplete || hasGoogleLink };
+function getCacheKey(activityName, city) {
+  return 'audit_' + Utilities.base64Encode(
+    Utilities.computeDigest(
+      Utilities.DigestAlgorithm.MD5,
+      activityName + '|' + city
+    )
+  );
 }
 
 /**
- * Enregistre l'audit dans une feuille Google
+ * Récupère un résultat du cache
  */
-function logAudit(url, score, criteria) {
+function getCachedResult(key) {
+  try {
+    const cache = CacheService.getScriptCache();
+    const cached = cache.get(key);
+    return cached ? JSON.parse(cached) : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+/**
+ * Met en cache un résultat
+ */
+function cacheResult(key, result) {
+  try {
+    const cache = CacheService.getScriptCache();
+    cache.put(key, JSON.stringify(result), CACHE_DURATION_HOURS * 3600);
+  } catch (error) {
+    console.warn('Erreur mise en cache:', error);
+  }
+}
+
+/**
+ * Enregistre l'audit dans la feuille Google
+ */
+function logAudit(activityName, city, url, score) {
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     let sheet = ss.getSheetByName('Audits');
     
-    // Crée la feuille si elle n'existe pas
     if (!sheet) {
       sheet = ss.insertSheet('Audits');
       sheet.appendRow([
         'Date',
-        'URL',
-        'Score',
-        'Réservation',
-        'Horaires',
-        'Mobile',
-        'Google'
+        'Activité',
+        'Ville',
+        'Site web',
+        'Score'
       ]);
     }
 
-    // Ajoute une ligne avec les résultats
     sheet.appendRow([
       new Date(),
-      url,
-      score,
-      criteria[0].ok ? 'Oui' : 'Non',
-      criteria[1].ok ? 'Oui' : 'Non',
-      criteria[2].ok ? 'Oui' : 'Non',
-      criteria[3].ok ? 'Oui' : 'Non'
+      activityName,
+      city,
+      url || '(non fourni)',
+      score
     ]);
   } catch (error) {
     console.error('Erreur logAudit:', error);
@@ -342,12 +426,11 @@ function logAudit(url, score, criteria) {
 }
 
 /**
- * Vérifie si une URL est privée ou locale
+ * Vérifie si une URL est privée
  */
 function isPrivateUrl(url) {
   const urlLower = url.toLowerCase();
   
-  // Localhost et IPs locales
   if (urlLower.includes('localhost') ||
       urlLower.includes('127.0.0.1') ||
       urlLower.includes('0.0.0.0') ||
@@ -367,4 +450,14 @@ function createResponse(data) {
   return ContentService
     .createTextOutput(JSON.stringify(data))
     .setMimeType(ContentService.MimeType.TEXT);
+}
+
+/**
+ * Gère les requêtes GET
+ */
+function doGet(e) {
+  return createResponse({ 
+    error: 'Utilisez POST pour soumettre un audit',
+    info: 'Script d\'audit Loqal avec Gemini AI'
+  });
 }

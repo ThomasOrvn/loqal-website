@@ -32,6 +32,9 @@ jobs:
 
       - name: Build site
         run: npm run build
+        env:
+          PUBLIC_WAITLIST_ENDPOINT: ${{ vars.PUBLIC_WAITLIST_ENDPOINT }}
+          PUBLIC_AUDIT_ENDPOINT: ${{ vars.PUBLIC_AUDIT_ENDPOINT }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

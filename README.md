@@ -109,52 +109,116 @@ PUBLIC_WAITLIST_ENDPOINT=https://script.google.com/macros/s/VOTRE_ID_SCRIPT/exec
 
 Remplissez le formulaire sur le site. Les données doivent apparaître dans votre Google Sheet.
 
-## 🎯 Configuration de l'audit gratuit
+## 🎯 Configuration de l'audit gratuit avec Gemini AI
 
-L'audit de réservabilité permet aux professionnels de tester la « réservabilité » de leur site web.
+L'audit de réservabilité utilise l'API Gemini de Google avec recherche web (grounding) pour analyser automatiquement la présence en ligne des professionnels.
 
-### Étape 1 : Créer le Google Sheet
+### Étape 1 : Obtenir une clé API Gemini
+
+1. Allez sur **Google AI Studio** : [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
+2. Connectez-vous avec votre compte Google
+3. Cliquez sur **Create API key** (ou **Obtenir une clé API**)
+4. Choisissez un projet Google Cloud existant ou créez-en un nouveau
+5. Copiez la clé API générée (format : `AIza...`)
+
+⚠️ **Important** : Cette clé donne accès à l'API Gemini. Ne la partagez jamais publiquement.
+
+### Étape 2 : Créer le Google Sheet
 
 1. Créez un nouveau Google Sheets
 2. Le script créera automatiquement un onglet **Audits** lors du premier audit
-3. Cet onglet contiendra : Date | URL | Score | Réservation | Horaires | Mobile | Google
+3. Cet onglet contiendra : Date | Activité | Ville | Site web | Score
 
-### Étape 2 : Déployer le script d'audit
+### Étape 3 : Déployer le script d'audit
 
 1. Dans Google Sheets, allez dans **Extensions > Apps Script**
 2. Supprimez le code par défaut
 3. Copiez-collez le contenu de `scripts/audit-apps-script.gs`
 4. Enregistrez (Ctrl+S ou Cmd+S)
-5. Cliquez sur **Déployer > Nouveau déploiement**
-   - Type : **Application Web**
-   - Exécuter en tant que : **Moi**
-   - Qui a accès : **Tout le monde**
-6. Autorisez l'application (Google vous demandera des permissions pour accéder aux feuilles et faire des requêtes web)
-7. Copiez l'URL du déploiement (ressemble à `https://script.google.com/macros/s/.../exec`)
 
-### Étape 3 : Configurer l'URL dans le site
+### Étape 4 : Ajouter la clé API Gemini comme propriété de script
 
-1. Créez un fichier `.env` à la racine du projet (ou modifiez-le s'il existe) :
+1. Dans l'éditeur Apps Script, cliquez sur **Projet** (icône d'engrenage ⚙️ dans la barre latérale gauche)
+2. Allez dans l'onglet **Propriétés du script**
+3. Cliquez sur **Ajouter une propriété de script**
+4. Nom : `GEMINI_API_KEY`
+5. Valeur : Collez votre clé API Gemini (celle obtenue à l'étape 1)
+6. Cliquez sur **Enregistrer les propriétés de script**
+
+⚠️ **Important** : La clé API est stockée de manière sécurisée dans les propriétés du script et ne sera jamais visible dans le code ou les logs.
+
+### Étape 5 : Déployer l'application web
+
+1. Cliquez sur **Déployer > Nouveau déploiement**
+2. Type : **Application Web**
+3. Description : "Audit Loqal avec Gemini"
+4. Exécuter en tant que : **Moi**
+5. Qui a accès : **Tout le monde**
+6. Cliquez sur **Déployer**
+7. **Autorisez l'application** : Google vous demandera des permissions pour :
+   - Accéder aux feuilles de calcul
+   - Se connecter à un service externe (API Gemini)
+   - Acceptez toutes les permissions
+8. Copiez l'**URL de déploiement** (format : `https://script.google.com/macros/s/.../exec`)
+
+### Étape 6 : Configurer l'URL dans le site
+
+#### Option A : Variable d'environnement locale (.env)
+
+Pour le développement local, créez un fichier `.env` à la racine du projet :
 
 ```bash
 PUBLIC_AUDIT_ENDPOINT=https://script.google.com/macros/s/VOTRE_ID_SCRIPT_AUDIT/exec
 ```
 
-2. Redémarrez le serveur de dev
+Redémarrez le serveur de dev.
 
-### Comment fonctionne l'audit ?
+#### Option B : Variable GitHub Actions (pour le déploiement)
 
-Le script analyse 4 critères pour un score sur 100 :
+Si votre site est déployé via GitHub Actions :
 
-1. **Bouton de réservation en ligne (35 points)** : détecte les liens/boutons contenant "réserver", "book", ou les widgets de réservation connus (Calendly, Regiondo, Winalist, etc.)
+1. Allez dans les **Settings** du repository GitHub
+2. **Secrets and variables > Actions**
+3. Onglet **Variables**
+4. Cliquez sur **New repository variable**
+5. Nom : `PUBLIC_AUDIT_ENDPOINT`
+6. Valeur : L'URL de déploiement du script
+7. Cliquez sur **Add variable**
 
-2. **Horaires affichés (25 points)** : recherche les horaires d'ouverture via schema.org ou les patterns d'horaires (jours + heures)
+Le workflow GitHub Actions utilisera automatiquement cette variable lors du build.
 
-3. **Site optimisé mobile (20 points)** : vérifie la présence de la balise meta viewport et HTTPS
+### Comment fonctionne l'audit avec Gemini ?
 
-4. **Fiche Google complète (20 points)** : basé sur la réponse du professionnel + détection de liens Google Maps/Business
+L'API Gemini avec recherche Google (grounding) analyse 4 critères pour un score sur 100 :
 
-Les audits sont automatiquement enregistrés dans la feuille Google pour que vous puissiez suivre les professionnels intéressés.
+1. **Réservation en ligne avec créneaux disponibles (35 points)** : Gemini recherche un système de réservation fonctionnel (Calendly, Regiondo, etc.) et vérifie que des créneaux sont disponibles
+
+2. **Horaires/périodes de visite affichés (25 points)** : Recherche les horaires sur le site web ou la fiche Google Business
+
+3. **Site adapté au mobile (20 points)** : Vérifie l'optimisation mobile (responsive) et HTTPS
+
+4. **Fiche Google Business complète avec horaires et photos (20 points)** : Vérifie l'existence et la complétude de la fiche Google Business Profile
+
+**Avantages de l'analyse par IA :**
+- Recherche web en temps réel via Google
+- Compréhension contextuelle des pages web
+- Vérification des créneaux réellement disponibles
+- Analyse de la qualité et complétude des informations
+
+**Sécurité et limites :**
+- Cache de 24h par activité/ville pour économiser les requêts API
+- Limite de 20 audits par heure pour éviter les abus
+- Les résultats sont enregistrés automatiquement dans la feuille Google
+
+### Coûts
+
+L'API Gemini offre un quota gratuit généreux :
+- **Gemini 1.5 Flash** : 15 requêtes/minute, 1500 requêtes/jour (gratuit)
+- **Gemini 1.5 Pro** : 2 requêtes/minute, 50 requêtes/jour (gratuit)
+
+Le script utilise par défaut `gemini-1.5-flash-latest` qui est rapide et suffisant pour cette tâche. Vous pouvez modifier la constante `GEMINI_MODEL` dans le script si nécessaire.
+
+Consultez les limites actuelles : [https://ai.google.dev/pricing](https://ai.google.dev/pricing)
 
 ### Test
 

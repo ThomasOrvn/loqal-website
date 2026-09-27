@@ -60,52 +60,51 @@
 
             <form id="audit-form" class="space-y-4">
               <div>
+                <label for="activity-name" class="block text-sm font-medium mb-2">
+                  Nom de votre activité <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="activity-name"
+                  name="activityName"
+                  required
+                  placeholder="Domaine Dupont, Atelier Bois de la Forêt..."
+                  class="w-full px-4 py-3 border border-borderline rounded focus:outline-none focus:ring-2 focus:ring-olive transition-all"
+                />
+              </div>
+
+              <div>
+                <label for="city" class="block text-sm font-medium mb-2">
+                  Ville <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  required
+                  placeholder="Beaune, Annecy..."
+                  class="w-full px-4 py-3 border border-borderline rounded focus:outline-none focus:ring-2 focus:ring-olive transition-all"
+                />
+              </div>
+
+              <div>
                 <label for="website-url" class="block text-sm font-medium mb-2">
-                  URL de votre site web
+                  Site web (optionnel)
                 </label>
                 <input
                   type="url"
                   id="website-url"
                   name="url"
-                  required
                   placeholder="https://www.votre-domaine.fr"
                   class="w-full px-4 py-3 border border-borderline rounded focus:outline-none focus:ring-2 focus:ring-olive transition-all"
                 />
-              </div>
-
-              <div class="space-y-2">
-                <p class="text-sm font-medium">
-                  Votre fiche Google (Google Business Profile) est-elle complète, avec horaires et photos ?
-                </p>
-                <div class="flex gap-4">
-                  <label class="flex items-center cursor-pointer">
-                    <input
-                      type="radio"
-                      name="google-complete"
-                      value="yes"
-                      required
-                      class="mr-2 text-olive focus:ring-olive"
-                    />
-                    <span class="text-sm">Oui</span>
-                  </label>
-                  <label class="flex items-center cursor-pointer">
-                    <input
-                      type="radio"
-                      name="google-complete"
-                      value="no"
-                      required
-                      class="mr-2 text-olive focus:ring-olive"
-                    />
-                    <span class="text-sm">Non</span>
-                  </label>
-                </div>
               </div>
 
               <button
                 type="submit"
                 class="w-full px-6 py-3 bg-ink text-ivory font-medium rounded hover:bg-olive transition-colors"
               >
-                Tester mon domaine
+                Tester mon activité
               </button>
             </form>
 
@@ -160,7 +159,7 @@
               id="test-again"
               class="block mt-4 text-sm text-olive hover:underline"
             >
-              ← Tester un autre domaine
+              ← Tester une autre activité
             </button>
           </div>
         </div>
@@ -177,6 +176,13 @@
   if (!isConfigured) {
     document.getElementById('example-notice')?.classList.remove('hidden');
   }
+
+  // Store audit data for pre-filling pro form
+  let auditData = {
+    activityName: '',
+    city: '',
+    url: ''
+  };
 
   // Get score color
   function getScoreColor(score: number): string {
@@ -229,7 +235,7 @@
     // Animate score
     animateGauge(data.score);
 
-    // Display criteria
+    // Display criteria with sources
     criteriaList.innerHTML = data.criteria
       .map((criterion: any) => `
         <div class="flex gap-4 p-4 border border-borderline rounded-lg ${criterion.ok ? 'bg-olive/5' : 'bg-warmgrey/5'}">
@@ -242,6 +248,7 @@
               <span class="text-xs text-warmgrey ml-2">${criterion.points} pts</span>
             </div>
             ${!criterion.ok && criterion.conseil ? `<p class="text-sm text-warmgrey mt-2">${criterion.conseil}</p>` : ''}
+            ${criterion.source ? `<a href="${criterion.source}" target="_blank" rel="noopener noreferrer" class="text-xs text-olive hover:underline mt-2 inline-block">Voir la source →</a>` : ''}
           </div>
         </div>
       `)
@@ -261,56 +268,66 @@
     }
 
     const formData = new FormData(form);
-    let url = formData.get('url') as string;
-    const googleComplete = formData.get('google-complete') as string;
+    const activityName = formData.get('activityName') as string;
+    const city = formData.get('city') as string;
+    let url = (formData.get('url') as string) || '';
 
-    // Validate and normalize URL
-    url = url.trim();
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = 'https://' + url;
+    // Store for later use
+    auditData = { activityName, city, url };
+
+    // Normalize URL if provided
+    if (url) {
+      url = url.trim();
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+      }
     }
 
     // Disable form
     const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
     if (submitBtn) {
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Analyse en cours...';
+      submitBtn.textContent = 'Analyse en cours…';
     }
 
     try {
       if (!isConfigured) {
         // Show example result if not configured
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         showResults({
-          score: 35,
+          score: 45,
           criteria: [
             {
               id: 'booking',
-              label: 'Bouton de réservation en ligne',
+              label: 'Réservation en ligne avec créneaux disponibles',
               ok: false,
               points: 35,
-              conseil: 'Ajoutez un bouton "Réserver" visible sur votre page d\'accueil.'
+              conseil: 'Ajoutez un système de réservation en ligne (Calendly, Regiondo, etc.) avec vos créneaux disponibles.',
+              source: ''
             },
             {
               id: 'hours',
-              label: 'Horaires de visite affichés',
-              ok: false,
+              label: 'Horaires/périodes de visite affichés',
+              ok: true,
               points: 25,
-              conseil: 'Affichez clairement vos horaires d\'ouverture sur votre site.'
+              conseil: '',
+              source: url || ''
             },
             {
               id: 'mobile',
-              label: 'Site optimisé mobile',
+              label: 'Site adapté au mobile',
               ok: true,
               points: 20,
-              conseil: ''
+              conseil: '',
+              source: ''
             },
             {
               id: 'google',
-              label: 'Fiche Google complète',
-              ok: googleComplete === 'yes',
+              label: 'Fiche Google Business complète avec horaires et photos',
+              ok: false,
               points: 20,
-              conseil: googleComplete === 'no' ? 'Complétez votre fiche Google Business Profile avec horaires et photos.' : ''
+              conseil: 'Complétez votre fiche Google Business Profile avec des horaires détaillés et des photos de qualité.',
+              source: ''
             }
           ]
         });
@@ -322,8 +339,9 @@
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: new URLSearchParams({
+            activityName: activityName,
+            city: city,
             url: url,
-            googleComplete: googleComplete,
           }),
         });
 
@@ -345,13 +363,13 @@
         errorDiv.textContent =
           error instanceof Error
             ? error.message
-            : 'Une erreur est survenue. Veuillez vérifier l\'URL et réessayer.';
+            : 'Une erreur est survenue. Veuillez réessayer.';
         errorDiv.classList.remove('hidden');
       }
     } finally {
       if (submitBtn) {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Tester mon domaine';
+        submitBtn.textContent = 'Tester mon activité';
       }
     }
   });
@@ -379,14 +397,19 @@
     form?.reset();
   });
 
-  // Handle CTA click to switch to pro tab
+  // Handle CTA click to switch to pro tab and pre-fill form
   document.getElementById('audit-cta')?.addEventListener('click', (e) => {
     const target = e.currentTarget as HTMLAnchorElement;
     const tab = target.getAttribute('data-tab');
     if (tab) {
       setTimeout(() => {
         window.dispatchEvent(
-          new CustomEvent('switchWaitlistTab', { detail: { tab } })
+          new CustomEvent('switchWaitlistTab', { 
+            detail: { 
+              tab,
+              prefillData: auditData
+            } 
+          })
         );
       }, 500);
     }
