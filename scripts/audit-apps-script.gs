@@ -68,10 +68,11 @@ function doPost(e) {
     const result = callGeminiAudit(activityName, city, url, siteHints);
     
     if (result.error) {
-      return createResponse({ error: result.error });
+      // Ne pas mettre en cache ni compter les erreurs
+      return createResponse(result);
     }
 
-    // Mettre en cache
+    // Mettre en cache uniquement les succès
     cacheResult(cacheKey, result);
 
     // Enregistrer l'audit
@@ -99,7 +100,10 @@ function callGeminiAudit(activityName, city, url, siteHints) {
   const apiKey = PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');
   
   if (!apiKey) {
-    return { error: 'Clé API Gemini non configurée. Contactez l\'administrateur.' };
+    return { 
+      error: 'Clé API Gemini non configurée. Contactez l\'administrateur.',
+      details: 'GEMINI_API_KEY not found in script properties'
+    };
   }
 
   // Construction du prompt
@@ -183,7 +187,7 @@ Réponds UNIQUEMENT avec ce JSON strict (aucun texte avant ou après) :
   ]
 }`;
 
-  // Appel API Gemini avec google_search
+  // Appel API Gemini avec google_search (generateContent API legacy)
   const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
   
   const payload = {
@@ -196,9 +200,7 @@ Réponds UNIQUEMENT avec ce JSON strict (aucun texte avant ou après) :
       google_search: {}
     }],
     generationConfig: {
-      temperature: 0.2,
-      topP: 0.8,
-      topK: 40
+      temperature: 0.2
     }
   };
 
@@ -214,47 +216,111 @@ Réponds UNIQUEMENT avec ce JSON strict (aucun texte avant ou après) :
     });
 
     const responseCode = response.getResponseCode();
-    if (responseCode !== 200) {
-      console.error('Erreur API Gemini:', response.getContentText());
-      return { error: 'Erreur lors de l\'analyse IA. Veuillez réessayer.' };
-    }
-
-    const data = JSON.parse(response.getContentText());
+    const responseText = response.getContentText();
     
-    if (!data.candidates || data.candidates.length === 0) {
-      return { error: 'Aucune réponse de l\'IA. Veuillez réessayer.' };
+    if (responseCode !== 200) {
+      console.error('Erreur API Gemini:', responseText);
+      let errorDetails = `HTTP ${responseCode}`;
+      try {
+        const errorData = JSON.parse(responseText);
+        if (errorData.error) {
+          errorDetails += `: ${errorData.error.status || ''} ${errorData.error.message || ''}`.trim();
+        }
+      } catch (e) {
+        errorDetails += `: ${responseText.substring(0, 200)}`;
+      }
+      return { 
+        error: 'Erreur lors de l\'analyse IA. Veuillez réessayer.',
+        details: errorDetails
+      };
     }
 
-    const textContent = data.candidates[0].content.parts[0].text;
+    const data = JSON.parse(responseText);
+    
+    // Gérer les cas sans candidates ou avec finishReason/promptFeedback
+    if (!data.candidates || data.candidates.length === 0) {
+      let errorDetails = 'No candidates';
+      if (data.promptFeedback) {
+        errorDetails += `, promptFeedback: ${JSON.stringify(data.promptFeedback)}`;
+      }
+      console.error('Aucun candidat:', errorDetails);
+      return { 
+        error: 'Aucune réponse de l\'IA. Veuillez réessayer.',
+        details: errorDetails
+      };
+    }
+
+    const candidate = data.candidates[0];
+    
+    // Vérifier si le content existe
+    if (!candidate.content || !candidate.content.parts) {
+      const finishReason = candidate.finishReason || 'unknown';
+      console.error('Pas de content:', JSON.stringify(candidate));
+      return { 
+        error: 'Réponse incomplète de l\'IA. Veuillez réessayer.',
+        details: `finishReason: ${finishReason}`
+      };
+    }
+
+    // Concaténer tous les parts text (ignorer les parts sans text ou thought)
+    let textContent = '';
+    for (const part of candidate.content.parts) {
+      if (part.text) {
+        textContent += part.text;
+      }
+    }
+
+    if (!textContent) {
+      console.error('Aucun texte dans parts:', JSON.stringify(candidate.content.parts));
+      return { 
+        error: 'Réponse vide de l\'IA. Veuillez réessayer.',
+        details: 'No text in parts'
+      };
+    }
+
+    // Extraire sources depuis groundingMetadata si disponible
+    let groundingSources = [];
+    if (candidate.groundingMetadata && candidate.groundingMetadata.groundingChunks) {
+      for (const chunk of candidate.groundingMetadata.groundingChunks) {
+        if (chunk.web && chunk.web.uri) {
+          groundingSources.push(chunk.web.uri);
+        }
+      }
+    }
     
     // Parser le JSON de la réponse
-    const result = parseGeminiResponse(textContent);
+    const result = parseGeminiResponse(textContent, groundingSources);
     
     return result;
 
   } catch (error) {
-    console.error('Erreur appel Gemini:', error);
-    return { error: 'Erreur lors de l\'analyse IA. Veuillez réessayer.' };
+    console.error('Exception appel Gemini:', error.toString());
+    return { 
+      error: 'Erreur lors de l\'analyse IA. Veuillez réessayer.',
+      details: error.toString()
+    };
   }
 }
 
 /**
  * Parse la réponse de Gemini et extrait le JSON
  */
-function parseGeminiResponse(text) {
+function parseGeminiResponse(text, groundingSources) {
   try {
-    // Extraire le JSON (peut être entouré de ```json ... ```)
-    let jsonText = text.trim();
+    // Extraction JSON robuste : premier { au dernier }
+    const firstBrace = text.indexOf('{');
+    const lastBrace = text.lastIndexOf('}');
     
-    // Retirer les marqueurs de code markdown si présents
-    jsonText = jsonText.replace(/^```json\s*/i, '').replace(/```\s*$/, '');
-    jsonText = jsonText.replace(/^```\s*/, '').replace(/```\s*$/, '');
+    if (firstBrace === -1 || lastBrace === -1 || firstBrace >= lastBrace) {
+      throw new Error('Aucun JSON trouvé dans la réponse');
+    }
     
+    const jsonText = text.substring(firstBrace, lastBrace + 1);
     const data = JSON.parse(jsonText);
     
     // Validation et recalcul du score
     if (!data.criteria || !Array.isArray(data.criteria)) {
-      throw new Error('Format de réponse invalide');
+      throw new Error('Format de réponse invalide : criteria manquant ou invalide');
     }
 
     // Recalculer le score pour être sûr
@@ -263,17 +329,27 @@ function parseGeminiResponse(text) {
       if (criterion.ok) {
         calculatedScore += criterion.points;
       }
+      // Utiliser groundingSources si source est vide et qu'on a des sources
+      if ((!criterion.source || criterion.source === '') && groundingSources && groundingSources.length > 0) {
+        criterion.source = groundingSources[0]; // Prendre la première source
+      }
     });
 
     data.score = calculatedScore;
 
+    // Ajouter les sources de grounding si disponibles
+    if (groundingSources && groundingSources.length > 0) {
+      data.sources = groundingSources;
+    }
+
     return data;
 
   } catch (error) {
-    console.error('Erreur parsing:', error, 'Texte:', text);
+    console.error('Erreur parsing JSON:', error.toString());
+    console.error('Texte reçu:', text.substring(0, 500));
     return { 
       error: 'Impossible d\'analyser la réponse. Veuillez réessayer.',
-      details: error.toString()
+      details: `Parse error: ${error.toString()}`
     };
   }
 }
@@ -459,4 +535,38 @@ function doGet(e) {
     error: 'Utilisez POST pour soumettre un audit',
     info: 'Script d\'audit Loqal avec Gemini AI'
   });
+}
+
+/**
+ * Fonction de test pour diagnostiquer l'API Gemini depuis l'éditeur Apps Script
+ * Menu : Exécution > testAudit
+ */
+function testAudit() {
+  console.log('=== Test de l\'audit Gemini ===');
+  console.log('Modèle :', GEMINI_MODEL);
+  
+  const result = callGeminiAudit(
+    'Château de Pommard',
+    'Pommard',
+    'https://www.chateaudepommard.com',
+    null
+  );
+  
+  console.log('Résultat :');
+  console.log(JSON.stringify(result, null, 2));
+  
+  if (result.error) {
+    console.error('❌ Erreur :', result.error);
+    if (result.details) {
+      console.error('Détails :', result.details);
+    }
+  } else {
+    console.log('✅ Score :', result.score + '/100');
+    console.log('✅ Critères validés :', result.criteria.filter(c => c.ok).length + '/4');
+    if (result.sources) {
+      console.log('✅ Sources :', result.sources.length);
+    }
+  }
+  
+  return result;
 }

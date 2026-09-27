@@ -353,6 +353,10 @@
         const data = JSON.parse(text);
 
         if (data.error) {
+          // Log details to console if present
+          if (data.details) {
+            console.error('Détails de l\'erreur:', data.details);
+          }
           throw new Error(data.error);
         }
 

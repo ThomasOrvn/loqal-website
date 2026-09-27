@@ -206,9 +206,40 @@ L'API Gemini avec recherche Google (grounding) analyse 4 critères pour un score
 - Analyse de la qualité et complétude des informations
 
 **Sécurité et limites :**
-- Cache de 24h par activité/ville pour économiser les requêts API
+- Cache de 24h par activité/ville pour économiser les requêtes API
 - Limite de 20 audits par heure pour éviter les abus
 - Les résultats sont enregistrés automatiquement dans la feuille Google
+
+### Mettre à jour le script d'audit
+
+Quand le code du script change (nouvelle version dans `scripts/audit-apps-script.gs`) :
+
+1. **Copier le nouveau code**
+   - Ouvrez `scripts/audit-apps-script.gs`
+   - Sélectionnez tout (Ctrl+A / Cmd+A) et copiez
+
+2. **Mettre à jour dans Apps Script**
+   - Ouvrez votre script dans Apps Script
+   - Remplacez tout l'ancien code par le nouveau
+   - Enregistrez (Ctrl+S / Cmd+S)
+
+3. **Déployer la nouvelle version**
+   - Cliquez sur **Déployer > Gérer les déploiements**
+   - Cliquez sur l'icône ✏️ (crayon) à droite
+   - **Version** : Nouvelle version
+   - Cliquez sur **Déployer**
+
+**L'URL `/exec` reste identique, pas besoin de toucher GitHub.**
+
+### Diagnostiquer les erreurs
+
+Si l'audit retourne une erreur :
+
+- Ouvrez la console navigateur (F12) pour voir les détails techniques
+- Dans Apps Script, utilisez **Vue > Journaux** pour voir les logs
+- Exécutez la fonction `testAudit()` depuis l'éditeur Apps Script pour tester
+- Vérifiez que `GEMINI_API_KEY` est bien configurée dans les propriétés
+- Vérifiez que le modèle `gemini-3.8-flash` est accessible
 
 ### Coûts et limites
 
