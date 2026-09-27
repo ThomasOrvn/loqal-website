@@ -7,23 +7,23 @@ const { ambition } = siteData;
 const terroir_images = [
   {
     src: '/images/univers/artisanat.webp',
-    alt: 'Artisan au travail'
-  },
-  {
-    src: '/images/univers/peche.webp',
-    alt: 'Pêche en rivière'
-  },
-  {
-    src: '/images/univers/chasse.webp',
-    alt: 'Forêt et chasse'
+    alt: 'Artisans',
+    label: 'Artisans'
   },
   {
     src: '/images/univers/gastronomie.webp',
-    alt: 'Produits du terroir'
+    alt: 'Producteurs',
+    label: 'Producteurs'
   },
   {
-    src: '/images/univers/savoir-faire.webp',
-    alt: 'Savoir-faire traditionnel'
+    src: '/images/univers/peche.webp',
+    alt: 'Pêche',
+    label: 'Pêche'
+  },
+  {
+    src: '/images/univers/chasse.webp',
+    alt: 'Chasse',
+    label: 'Chasse'
   },
 ];
 ---
@@ -36,16 +36,19 @@ const terroir_images = [
       <p class="text-body text-warmgrey mb-10 max-w-2xl mx-auto">{ambition.description}</p>
 
       <!-- Photo collage showcasing future terroir trades -->
-      <div class="flex flex-wrap justify-center gap-4 mt-8">
+      <div class="flex flex-wrap justify-center gap-6 mt-8">
         {
           terroir_images.map((image) => (
-            <div class="w-24 h-24 md:w-32 md:h-32 rounded overflow-hidden shadow-sm opacity-80 hover:opacity-100 transition-opacity">
-              <img
-                src={image.src}
-                alt={image.alt}
-                loading="lazy"
-                class="w-full h-full object-cover"
-              />
+            <div class="flex flex-col items-center">
+              <div class="w-32 h-32 md:w-40 md:h-40 rounded-lg overflow-hidden shadow-md opacity-80 hover:opacity-100 transition-opacity">
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  loading="lazy"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p class="text-sm text-warmgrey mt-2 font-medium">{image.label}</p>
             </div>
           ))
         }

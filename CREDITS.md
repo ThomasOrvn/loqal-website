@@ -13,16 +13,16 @@ Toutes les photos utilisées sur le site Loqal sont sous licence libre et provie
 
 ### Dégustations commentées
 - **Fichier** : `public/images/univers/degustations.webp`
-- **Titre** : Portrait of a senior winemaker with wine glass in vineyard
-- **Auteur** : Getty Images
-- **Source** : [https://unsplash.com/photos/CP4bOIxYIfo](https://unsplash.com/photos/CP4bOIxYIfo)
+- **Titre** : Wine bottles stored in a cellar with chalkboards
+- **Auteur** : Joao Vitor Marcilio
+- **Source** : [https://unsplash.com/photos/dcSWrXQ42so](https://unsplash.com/photos/dcSWrXQ42so)
 - **Licence** : Unsplash License (usage libre)
 
 ### Balades dans les vignes
 - **Fichier** : `public/images/univers/balades-vignes.webp`
-- **Titre** : Vineyard rows stretch out under a bright blue sky
-- **Auteur** : Photographe Unsplash
-- **Source** : [https://unsplash.com/photos/zhCy92YZi3M](https://unsplash.com/photos/zhCy92YZi3M)
+- **Titre** : Person walking through a vineyard at sunset
+- **Auteur** : Elodie Debard
+- **Source** : [https://unsplash.com/photos/5f23KdhZUtQ](https://unsplash.com/photos/5f23KdhZUtQ)
 - **Licence** : Unsplash License (usage libre)
 
 ### Accords mets et vins
