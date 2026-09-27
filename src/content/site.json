@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Loqal – Réservez vignerons, artisans et guides du terroir",
-    "description": "Découvrez et réservez des expériences authentiques auprès des vignerons, artisans et guides locaux. Vignerons, artisans, guides : gérez agenda et réservations. Rejoignez la liste d'attente.",
+    "title": "Loqal – Réservez vos visites et dégustations chez les vignerons",
+    "description": "Découvrez et réservez vos visites de cave et dégustations dans les domaines viticoles. Vignerons : gérez votre agenda et vos réservations simplement. Rejoignez la liste d'attente.",
     "url": "https://loqal.fr",
     "emails": {
       "contact": "contact@loqal.fr",
@@ -10,45 +10,45 @@
   },
   "hero": {
     "title": "Le terroir, de l'intérieur.",
-    "subtitle": "Chais de vignerons, ateliers d'artisans, rivières au petit matin, forêts en saison, étals de producteurs… Découvrez et réservez des rencontres authentiques avec celles et ceux qui façonnent, de leurs mains, le terroir français.",
+    "subtitle": "Caves voûtées, vendanges, dégustations au milieu des vignes… Découvrez et réservez en quelques clics des moments authentiques avec les vignerons qui font vivre nos terroirs.",
     "cta": {
       "visitor": "Rejoindre la liste d'attente"
     }
   },
   "univers": {
     "eyebrow": "Découvrir",
-    "title": "Des expériences authentiques du terroir",
+    "title": "Le vignoble, côté coulisses",
     "items": [
       {
-        "title": "Vin & Vignobles",
-        "description": "Visites de cave, dégustations commentées, rencontres avec les vignerons"
+        "title": "Visites de cave",
+        "description": "Descendez dans les caves, là où le vin prend le temps de naître"
       },
       {
-        "title": "Artisanat",
-        "description": "Ateliers, démonstrations de savoir-faire, boutiques d'artisans d'art"
+        "title": "Dégustations commentées",
+        "description": "Goûtez les cuvées avec celui ou celle qui les a faites"
       },
       {
-        "title": "Pêche",
-        "description": "Sorties guidées en rivière, en lac ou en mer avec des guides professionnels"
+        "title": "Balades dans les vignes",
+        "description": "Parcourez les parcelles et comprenez ce qui fait un terroir"
       },
       {
-        "title": "Chasse",
-        "description": "Chasses accompagnées, découverte de territoires avec des guides passionnés"
+        "title": "Accords mets et vins",
+        "description": "Produits locaux et vins du domaine, réunis à la même table"
       },
       {
-        "title": "Gastronomie & Produits locaux",
-        "description": "Visites de fermes, marchés de producteurs, ateliers culinaires"
+        "title": "Vendanges et ateliers",
+        "description": "Mettez la main à la grappe le temps d'une matinée"
       },
       {
-        "title": "Savoir-faire traditionnels",
-        "description": "Découverte de métiers anciens, stages d'initiation, visites d'ateliers"
+        "title": "Rencontres vigneronnes",
+        "description": "Des échanges vrais avec des passionnés, loin des circuits touristiques"
       }
     ]
   },
   "visitors": {
     "eyebrow": "Pour les visiteurs",
     "title": "Trouvez et réservez en quelques clics",
-    "description": "En vacances ou près de chez vous, trouvez en quelques secondes les vignerons, artisans et guides autour de vous. Des fiches claires, des disponibilités à jour, une réservation en quelques clics. Fini les portes closes.",
+    "description": "En vacances ou près de chez vous, trouvez en quelques secondes les domaines qui vous ouvrent leurs portes. Horaires, tarifs, créneaux disponibles : tout est clair et à jour. Fini les caves fermées et les appels sans réponse.",
     "steps": [
       {
         "title": "Cherchez près de chez vous",
@@ -67,7 +67,7 @@
   "pros": {
     "eyebrow": "Pour les professionnels",
     "title": "Transmettez votre savoir-faire, on s'occupe du reste",
-    "description": "Vignerons, artisans, guides de pêche et de chasse, producteurs : vous formez le tissu artisanal de la France, ces passionnés qui façonnent et font vivre nos terroirs. Vous avez envie de faire découvrir votre savoir-faire au grand public, sans y laisser vos soirées en administratif. Loqal gère pour vous l'agenda, les réservations, les rappels et votre vitrine en ligne. Vous vous consacrez à votre métier et à l'accueil.",
+    "description": "Vous aimez faire découvrir votre domaine, mais entre la vigne, la cave et les salons, gérer les visites devient vite un casse-tête : appels manqués, mails à rallonge, visiteurs qui ne viennent pas. Loqal gère pour vous l'agenda, les réservations, les rappels et votre vitrine en ligne. Vous vous consacrez à vos vins et à l'accueil.",
     "benefits": [
       {
         "title": "Agenda et réservations au même endroit",
@@ -111,6 +111,11 @@
     },
     "exampleNotice": "ℹ️ Mode exemple : configurez PUBLIC_AUDIT_ENDPOINT pour activer l'audit réel."
   },
+  "ambition": {
+    "eyebrow": "Notre ambition",
+    "title": "Le vin d'abord. Tout le terroir ensuite.",
+    "description": "On commence par les domaines viticoles, parce que c'est là que le terroir se vit le plus intensément. Mais le savoir-faire français ne s'arrête pas aux vignes. Demain, Loqal ouvrira ses portes aux artisans, producteurs, guides de pêche et de chasse qui font vivre nos régions."
+  },
   "founder": {
     "eyebrow": "Fondateur",
     "name": "Thomas",
@@ -134,8 +139,8 @@
         "answer": "Le lancement se fera d'abord dans quelques régions pilotes, puis s'étendra progressivement. Si vous êtes professionnel ou visiteur intéressé, indiquez votre région dans la liste d'attente : cela m'aidera à prioriser le déploiement."
       },
       {
-        "question": "Quels types de professionnels peuvent utiliser Loqal ?",
-        "answer": "Vignerons, artisans d'art et de métiers, guides de pêche, guides de chasse, producteurs locaux, et tous ceux qui proposent des visites, ateliers ou sorties autour du terroir et du savoir-faire. Si votre activité correspond, inscrivez-vous sur la liste d'attente."
+        "question": "Quels professionnels peuvent utiliser Loqal ?",
+        "answer": "Au lancement, Loqal s'adresse aux domaines viticoles qui accueillent des visiteurs : caves, châteaux, vignerons indépendants. L'ouverture aux artisans, producteurs et guides du terroir est prévue ensuite. Vous êtes dans l'un de ces métiers ? Inscrivez-vous dès maintenant, vous serez parmi les premiers prévenus."
       },
       {
         "question": "Comment fonctionne la liste d'attente ?",
@@ -194,7 +199,7 @@
     "error": "Une erreur est survenue. Veuillez réessayer ou nous contacter directement."
   },
   "footer": {
-    "tagline": "La plateforme qui rapproche visiteurs et professionnels du terroir.",
+    "tagline": "La plateforme qui ouvre les portes des domaines viticoles, et bientôt de tout le terroir.",
     "legal": [
       {
         "label": "Mentions légales",

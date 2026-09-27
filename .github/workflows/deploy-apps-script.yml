@@ -53,16 +53,6 @@ jobs:
         run: |
           mkdir -p ~/.config/clasp
           printf '%s' "$CLASPRC_JSON" > ~/.clasprc.json
-          # Debug: Check file format (keys only, no values)
-          echo "🔍 Debug: Checking .clasprc.json format..."
-          echo "Top-level keys: $(jq -r 'keys | join(", ")' ~/.clasprc.json)"
-          if jq -e '.tokens' ~/.clasprc.json > /dev/null 2>&1; then
-            echo "Format: clasp 3.x (tokens object)"
-          elif jq -e '.token' ~/.clasprc.json > /dev/null 2>&1; then
-            echo "Format: clasp 2.x (token object)"
-          else
-            echo "Format: Unknown"
-          fi
           echo "✅ Clasp authentication configured"
 
       - name: Deploy audit script

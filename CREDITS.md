@@ -2,14 +2,51 @@
 
 Toutes les photos utilisées sur le site Loqal sont sous licence libre et proviennent d'Unsplash.
 
-## Photos des univers
+## Photos des univers (Section vignoble)
 
-### Vin & Vignobles
-- **Fichier** : `public/images/univers/vignobles.webp`
+### Visites de cave
+- **Fichier** : `public/images/univers/visites-cave.webp`
+- **Titre** : Rows of wooden wine barrels stacked in a dark cellar
+- **Auteur** : Raúl Mermans García
+- **Source** : [https://unsplash.com/photos/MicjEve7e2Q](https://unsplash.com/photos/MicjEve7e2Q)
+- **Licence** : Unsplash License (usage libre)
+
+### Dégustations commentées
+- **Fichier** : `public/images/univers/degustations.webp`
+- **Titre** : Portrait of a senior winemaker with wine glass in vineyard
+- **Auteur** : Getty Images
+- **Source** : [https://unsplash.com/photos/CP4bOIxYIfo](https://unsplash.com/photos/CP4bOIxYIfo)
+- **Licence** : Unsplash License (usage libre)
+
+### Balades dans les vignes
+- **Fichier** : `public/images/univers/balades-vignes.webp`
+- **Titre** : Vineyard rows stretch out under a bright blue sky
+- **Auteur** : Photographe Unsplash
+- **Source** : [https://unsplash.com/photos/zhCy92YZi3M](https://unsplash.com/photos/zhCy92YZi3M)
+- **Licence** : Unsplash License (usage libre)
+
+### Accords mets et vins
+- **Fichier** : `public/images/univers/accords-mets.webp`
+- **Titre** : Cheese, wine, and plates on a rustic table
+- **Auteur** : Joana Abreu
+- **Source** : [https://unsplash.com/photos/wTA9xs9x0T0](https://unsplash.com/photos/wTA9xs9x0T0)
+- **Licence** : Unsplash License (usage libre)
+
+### Vendanges et ateliers
+- **Fichier** : `public/images/univers/vendanges.webp`
+- **Titre** : Person harvesting grapes in a vineyard at sunset
+- **Auteur** : Giuseppe Famiani
+- **Source** : [https://unsplash.com/photos/Tq0gR4kAs2g](https://unsplash.com/photos/Tq0gR4kAs2g)
+- **Licence** : Unsplash License (usage libre)
+
+### Rencontres vigneronnes
+- **Fichier** : `public/images/univers/rencontres-vigneronnes.webp`
 - **Titre** : Vineyard in France
 - **Auteur** : Hermes Rivera
 - **Source** : [https://unsplash.com/photos/photo-1506377247377-2a5b3b417ebb](https://unsplash.com/photos/photo-1506377247377-2a5b3b417ebb)
 - **Licence** : Unsplash License (usage libre)
+
+## Photos section "Notre ambition"
 
 ### Artisanat
 - **Fichier** : `public/images/univers/artisanat.webp`
@@ -32,14 +69,14 @@ Toutes les photos utilisées sur le site Loqal sont sous licence libre et provie
 - **Source** : [https://unsplash.com/photos/photo-1511497584788-876760111969](https://unsplash.com/photos/photo-1511497584788-876760111969)
 - **Licence** : Unsplash License (usage libre)
 
-### Gastronomie & Produits locaux
+### Gastronomie
 - **Fichier** : `public/images/univers/gastronomie.webp`
 - **Titre** : French market
 - **Auteur** : Toa Heftiba
 - **Source** : [https://unsplash.com/photos/photo-1488459716781-31db52582fe9](https://unsplash.com/photos/photo-1488459716781-31db52582fe9)
 - **Licence** : Unsplash License (usage libre)
 
-### Savoir-faire traditionnels
+### Savoir-faire
 - **Fichier** : `public/images/univers/savoir-faire.webp`
 - **Titre** : Pottery craftsmanship
 - **Auteur** : Quino Al

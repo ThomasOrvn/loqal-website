@@ -1,0 +1,55 @@
+---
+import siteData from '../content/site.json';
+
+const { ambition } = siteData;
+
+// Images showing other terroir trades (future scope)
+const terroir_images = [
+  {
+    src: '/images/univers/artisanat.webp',
+    alt: 'Artisan au travail'
+  },
+  {
+    src: '/images/univers/peche.webp',
+    alt: 'Pêche en rivière'
+  },
+  {
+    src: '/images/univers/chasse.webp',
+    alt: 'Forêt et chasse'
+  },
+  {
+    src: '/images/univers/gastronomie.webp',
+    alt: 'Produits du terroir'
+  },
+  {
+    src: '/images/univers/savoir-faire.webp',
+    alt: 'Savoir-faire traditionnel'
+  },
+];
+---
+
+<section id="ambition" class="section-padding bg-ivory">
+  <div class="container-custom">
+    <div class="max-w-4xl mx-auto text-center">
+      <p class="small-caps text-warmgrey mb-4">{ambition.eyebrow}</p>
+      <h2 class="text-h2 font-serif mb-6">{ambition.title}</h2>
+      <p class="text-body text-warmgrey mb-10 max-w-2xl mx-auto">{ambition.description}</p>
+
+      <!-- Photo collage showcasing future terroir trades -->
+      <div class="flex flex-wrap justify-center gap-4 mt-8">
+        {
+          terroir_images.map((image) => (
+            <div class="w-24 h-24 md:w-32 md:h-32 rounded overflow-hidden shadow-sm opacity-80 hover:opacity-100 transition-opacity">
+              <img
+                src={image.src}
+                alt={image.alt}
+                loading="lazy"
+                class="w-full h-full object-cover"
+              />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
