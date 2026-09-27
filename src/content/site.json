@@ -58,8 +58,8 @@
         "description": "Créez vos créneaux, gérez vos disponibilités et acceptez les réservations en un clin d'œil."
       },
       {
-        "title": "Zéro paperasse",
-        "description": "Confirmations et rappels partent automatiquement : moins d'appels, moins d'absences, plus de temps pour votre métier."
+        "title": "Plus de temps pour la vigne",
+        "description": "Loqal s'occupe des confirmations et des rappels. Vous gardez vos journées pour ce qui compte."
       },
       {
         "title": "Votre vitrine clé en main",
@@ -91,7 +91,7 @@
       "title": "Détail de votre score",
       "cta": "Rejoignez la liste d'attente pro",
       "testAgain": "← Tester une autre activité",
-      "helpText": "Loqal vous aide à devenir réservable en quelques minutes : gérez votre agenda, vos réservations et votre vitrine en ligne, sans paperasse."
+      "helpText": "Loqal vous aide à devenir réservable en quelques minutes : gérez votre agenda, vos réservations et votre vitrine en ligne, en toute simplicité."
     },
     "exampleNotice": "ℹ️ Mode exemple : configurez PUBLIC_AUDIT_ENDPOINT pour activer l'audit réel."
   },
