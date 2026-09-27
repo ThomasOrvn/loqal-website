@@ -109,6 +109,57 @@ PUBLIC_WAITLIST_ENDPOINT=https://script.google.com/macros/s/VOTRE_ID_SCRIPT/exec
 
 Remplissez le formulaire sur le site. Les données doivent apparaître dans votre Google Sheet.
 
+## 🎯 Configuration de l'audit gratuit
+
+L'audit de réservabilité permet aux professionnels de tester la « réservabilité » de leur site web.
+
+### Étape 1 : Créer le Google Sheet
+
+1. Créez un nouveau Google Sheets
+2. Le script créera automatiquement un onglet **Audits** lors du premier audit
+3. Cet onglet contiendra : Date | URL | Score | Réservation | Horaires | Mobile | Google
+
+### Étape 2 : Déployer le script d'audit
+
+1. Dans Google Sheets, allez dans **Extensions > Apps Script**
+2. Supprimez le code par défaut
+3. Copiez-collez le contenu de `scripts/audit-apps-script.gs`
+4. Enregistrez (Ctrl+S ou Cmd+S)
+5. Cliquez sur **Déployer > Nouveau déploiement**
+   - Type : **Application Web**
+   - Exécuter en tant que : **Moi**
+   - Qui a accès : **Tout le monde**
+6. Autorisez l'application (Google vous demandera des permissions pour accéder aux feuilles et faire des requêtes web)
+7. Copiez l'URL du déploiement (ressemble à `https://script.google.com/macros/s/.../exec`)
+
+### Étape 3 : Configurer l'URL dans le site
+
+1. Créez un fichier `.env` à la racine du projet (ou modifiez-le s'il existe) :
+
+```bash
+PUBLIC_AUDIT_ENDPOINT=https://script.google.com/macros/s/VOTRE_ID_SCRIPT_AUDIT/exec
+```
+
+2. Redémarrez le serveur de dev
+
+### Comment fonctionne l'audit ?
+
+Le script analyse 4 critères pour un score sur 100 :
+
+1. **Bouton de réservation en ligne (35 points)** : détecte les liens/boutons contenant "réserver", "book", ou les widgets de réservation connus (Calendly, Regiondo, Winalist, etc.)
+
+2. **Horaires affichés (25 points)** : recherche les horaires d'ouverture via schema.org ou les patterns d'horaires (jours + heures)
+
+3. **Site optimisé mobile (20 points)** : vérifie la présence de la balise meta viewport et HTTPS
+
+4. **Fiche Google complète (20 points)** : basé sur la réponse du professionnel + détection de liens Google Maps/Business
+
+Les audits sont automatiquement enregistrés dans la feuille Google pour que vous puissiez suivre les professionnels intéressés.
+
+### Test
+
+Remplissez le formulaire sur le site. Les données doivent apparaître dans votre Google Sheet.
+
 ## 🌐 Déploiement sur GitHub Pages
 
 Le site est hébergé gratuitement sur **GitHub Pages** avec le domaine personnalisé `loqal.fr`.
