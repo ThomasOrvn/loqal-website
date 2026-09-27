@@ -166,7 +166,7 @@
         "Gastronomie",
         "Nature"
       ],
-      "consent": "J'accepte de recevoir des informations sur le lancement de Loqal. Mes données seront traitées conformément à la politique de confidentialité.",
+      "consent": "J'accepte de recevoir des informations sur le lancement de Loqal. Mes données seront traitées conformément à notre",
       "submit": "Être prévenu du lancement"
     },
     "pro": {
@@ -187,7 +187,7 @@
         "Producteur local",
         "Autre"
       ],
-      "consent": "J'accepte de recevoir des informations sur le lancement de Loqal. Mes données seront traitées conformément à la politique de confidentialité.",
+      "consent": "J'accepte de recevoir des informations sur le lancement de Loqal. Mes données seront traitées conformément à notre",
       "submit": "Réserver ma place de pro fondateur"
     },
     "success": "Merci ! Vous recevrez un email dès que Loqal sera disponible.",
