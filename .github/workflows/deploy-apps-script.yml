@@ -53,7 +53,18 @@ jobs:
         run: |
           mkdir -p ~/.config/clasp
           printf '%s' "$CLASPRC_JSON" > ~/.clasprc.json
+          # Verify the file was created and is valid JSON
+          if [ ! -f ~/.clasprc.json ]; then
+            echo "❌ Error: ~/.clasprc.json was not created"
+            exit 1
+          fi
+          if ! jq empty ~/.clasprc.json 2>/dev/null; then
+            echo "❌ Error: ~/.clasprc.json is not valid JSON"
+            echo "File size: $(wc -c < ~/.clasprc.json) bytes"
+            exit 1
+          fi
           echo "✅ Clasp authentication configured"
+          echo "✅ File verified: $(wc -c < ~/.clasprc.json) bytes of valid JSON"
 
       - name: Deploy audit script
         env:
