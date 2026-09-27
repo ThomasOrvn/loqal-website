@@ -10,7 +10,7 @@
   },
   "hero": {
     "title": "Le terroir, de l'intérieur.",
-    "subtitle": "Caves voûtées, vendanges, dégustations au milieu des vignes… Découvrez et réservez en quelques clics des moments authentiques avec les vignerons qui font vivre nos terroirs.",
+    "subtitle": "Derrière chaque bouteille se cache un vigneron prêt à vous raconter son histoire. Loqal vous ouvre ses portes.",
     "cta": {
       "visitor": "Rejoindre la liste d'attente"
     }
@@ -18,37 +18,21 @@
   "univers": {
     "eyebrow": "Découvrir",
     "title": "Le vignoble, côté coulisses",
-    "items": [
-      {
-        "title": "Visites de cave",
-        "description": "Descendez dans les caves, là où le vin prend le temps de naître"
-      },
-      {
-        "title": "Dégustations commentées",
-        "description": "Goûtez les cuvées avec celui ou celle qui les a faites"
-      },
-      {
-        "title": "Balades dans les vignes",
-        "description": "Parcourez les parcelles et comprenez ce qui fait un terroir"
-      },
-      {
-        "title": "Accords mets et vins",
-        "description": "Produits locaux et vins du domaine, réunis à la même table"
-      },
-      {
-        "title": "Vendanges et ateliers",
-        "description": "Mettez la main à la grappe le temps d'une matinée"
-      },
-      {
-        "title": "Rencontres vigneronnes",
-        "description": "Des échanges vrais avec des passionnés, loin des circuits touristiques"
-      }
+    "subtitle": "Chaque domaine a sa façon de vous accueillir. En voici quelques-unes.",
+    "badges": [
+      "Visite de cave",
+      "Dégustation",
+      "Balade dans les vignes",
+      "Accord mets et vins",
+      "Vendanges",
+      "Atelier d'assemblage",
+      "Rencontre vigneronne"
     ]
   },
   "visitors": {
     "eyebrow": "Pour les visiteurs",
     "title": "Trouvez et réservez en quelques clics",
-    "description": "En vacances ou près de chez vous, trouvez en quelques secondes les domaines qui vous ouvrent leurs portes. Horaires, tarifs, créneaux disponibles : tout est clair et à jour. Fini les caves fermées et les appels sans réponse.",
+    "description": "En vacances ou près de chez vous, trouvez les domaines qui vous ouvrent leurs portes. Horaires, tarifs et créneaux sont à jour. Il ne vous reste qu'à choisir le domaine qui vous ressemble.",
     "steps": [
       {
         "title": "Cherchez près de chez vous",
@@ -67,7 +51,7 @@
   "pros": {
     "eyebrow": "Pour les professionnels",
     "title": "Transmettez votre savoir-faire, on s'occupe du reste",
-    "description": "Vous aimez faire découvrir votre domaine, mais entre la vigne, la cave et les salons, gérer les visites devient vite un casse-tête : appels manqués, mails à rallonge, visiteurs qui ne viennent pas. Loqal gère pour vous l'agenda, les réservations, les rappels et votre vitrine en ligne. Vous vous consacrez à vos vins et à l'accueil.",
+    "description": "Accueillir des visiteurs est un plaisir. Les organiser l'est beaucoup moins. Loqal prend en charge votre agenda, vos réservations et vos rappels, et vous gardez le meilleur : la rencontre.",
     "benefits": [
       {
         "title": "Agenda et réservations au même endroit",

@@ -3,56 +3,53 @@ import siteData from '../content/site.json';
 
 const { univers } = siteData;
 
-// Real images for each wine universe
+// Three showcase images
 const images = [
   {
     src: '/images/univers/visites-cave.webp',
-    alt: 'Cave à vin avec rangées de fûts en chêne'
+    alt: 'Visite de cave'
   },
   {
     src: '/images/univers/degustations.webp',
-    alt: 'Bouteilles de vin dans une cave avec tableaux'
-  },
-  {
-    src: '/images/univers/balades-vignes.webp',
-    alt: 'Promenade dans le vignoble au coucher du soleil'
-  },
-  {
-    src: '/images/univers/accords-mets.webp',
-    alt: 'Table rustique avec fromages et vin'
+    alt: 'Dégustation de vin'
   },
   {
     src: '/images/univers/vendanges.webp',
-    alt: 'Vendanges dans le vignoble au coucher du soleil'
-  },
-  {
-    src: '/images/univers/rencontres-vigneronnes.webp',
-    alt: 'Rencontre avec un vigneron passionné'
+    alt: 'Vendanges'
   },
 ];
 ---
 
 <section id="univers" class="section-padding section-border">
   <div class="container-custom">
-    <div class="text-center mb-12">
+    <div class="text-center mb-8">
       <p class="small-caps text-warmgrey mb-4">{univers.eyebrow}</p>
-      <h2 class="text-h2 font-serif max-w-3xl mx-auto">{univers.title}</h2>
+      <h2 class="text-h2 font-serif max-w-3xl mx-auto mb-4">{univers.title}</h2>
+      <p class="text-body text-warmgrey max-w-2xl mx-auto mb-8">{univers.subtitle}</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Pills/badges row -->
+    <div class="flex flex-wrap justify-center gap-3 mb-10">
       {
-        univers.items.map((item, index) => (
-          <div class="card hover:shadow-lg transition-shadow group">
-            <div class="aspect-[4/3] bg-warmgrey/10 rounded mb-4 overflow-hidden">
-              <img
-                src={images[index].src}
-                alt={images[index].alt}
-                loading="lazy"
-                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-            </div>
-            <h4 class="font-serif text-xl font-medium mb-2">{item.title}</h4>
-            <p class="text-warmgrey text-sm">{item.description}</p>
+        univers.badges.map((badge) => (
+          <span class="inline-block px-4 py-2 rounded-full text-sm font-medium bg-forest text-ivory">
+            {badge}
+          </span>
+        ))
+      }
+    </div>
+
+    <!-- Three images side by side on desktop, stacked on mobile -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto">
+      {
+        images.map((image) => (
+          <div class="aspect-video rounded-lg overflow-hidden">
+            <img
+              src={image.src}
+              alt={image.alt}
+              loading="lazy"
+              class="w-full h-full object-cover"
+            />
           </div>
         ))
       }
