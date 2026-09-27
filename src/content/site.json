@@ -83,6 +83,34 @@
       }
     ]
   },
+  "audit": {
+    "badge": "Audit gratuit",
+    "title": "Vos visiteurs peuvent-ils réserver facilement ?",
+    "description": "Testez gratuitement la réservabilité de votre domaine en quelques secondes.",
+    "form": {
+      "activityName": "Nom de votre activité",
+      "city": "Ville",
+      "website": "Site web (optionnel)",
+      "submit": "Tester mon activité"
+    },
+    "loading": {
+      "message": "Analyse en cours… Notre IA parcourt le web pour évaluer votre visibilité. Cela prend environ 30 secondes.",
+      "steps": [
+        "Recherche de votre fiche Google…",
+        "Vérification de la réservation en ligne…",
+        "Analyse de votre site mobile…",
+        "Évaluation de vos horaires affichés…"
+      ]
+    },
+    "results": {
+      "badge": "Résultats de l'audit",
+      "title": "Détail de votre score",
+      "cta": "Rejoignez la liste d'attente pro",
+      "testAgain": "← Tester une autre activité",
+      "helpText": "Loqal vous aide à devenir réservable en quelques minutes : gérez votre agenda, vos réservations et votre vitrine en ligne, sans paperasse."
+    },
+    "exampleNotice": "ℹ️ Mode exemple : configurez PUBLIC_AUDIT_ENDPOINT pour activer l'audit réel."
+  },
   "founder": {
     "eyebrow": "Fondateur",
     "name": "Thomas",

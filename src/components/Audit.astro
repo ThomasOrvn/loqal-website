@@ -1,5 +1,7 @@
 ---
 // Audit component for professional reservability score
+import siteContent from '../content/site.json';
+const audit = siteContent.audit;
 ---
 
 <section id="audit" class="section-padding section-border bg-warmgrey/5">
@@ -49,19 +51,19 @@
         <div>
           <div id="form-view">
             <div class="inline-block px-3 py-1 bg-red-500 text-white text-xs font-medium rounded mb-4">
-              Audit gratuit
+              {audit.badge}
             </div>
             <h2 class="text-h2 font-serif mb-4">
-              Vos visiteurs peuvent-ils réserver facilement ?
+              {audit.title}
             </h2>
             <p class="text-lg text-warmgrey mb-8 leading-relaxed">
-              Testez gratuitement la réservabilité de votre domaine en quelques secondes.
+              {audit.description}
             </p>
 
             <form id="audit-form" class="space-y-4">
               <div>
                 <label for="activity-name" class="block text-sm font-medium mb-2">
-                  Nom de votre activité <span class="text-red-500">*</span>
+                  {audit.form.activityName} <span class="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -75,7 +77,7 @@
 
               <div>
                 <label for="city" class="block text-sm font-medium mb-2">
-                  Ville <span class="text-red-500">*</span>
+                  {audit.form.city} <span class="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -89,7 +91,7 @@
 
               <div>
                 <label for="website-url" class="block text-sm font-medium mb-2">
-                  Site web (optionnel)
+                  {audit.form.website}
                 </label>
                 <input
                   type="url"
@@ -104,14 +106,27 @@
                 type="submit"
                 class="w-full px-6 py-3 bg-ink text-ivory font-medium rounded hover:bg-olive transition-colors"
               >
-                Tester mon activité
+                {audit.form.submit}
               </button>
             </form>
 
             <p id="audit-error" class="mt-4 text-red-600 text-sm hidden" role="alert"></p>
+            
+            <!-- Loading messages -->
+            <div id="audit-loading" class="mt-6 hidden">
+              <div class="p-6 bg-olive/5 border border-olive/20 rounded-lg">
+                <p class="text-base text-ink font-medium mb-3 leading-relaxed">
+                  {audit.loading.message}
+                </p>
+                <p id="audit-loading-step" class="text-sm text-olive/80 italic">
+                  {audit.loading.steps[0]}
+                </p>
+              </div>
+            </div>
+
             <p class="mt-4 text-xs text-warmgrey">
               <span id="example-notice" class="hidden">
-                ℹ️ Mode exemple : configurez PUBLIC_AUDIT_ENDPOINT pour activer l'audit réel.
+                {audit.exampleNotice}
               </span>
             </p>
           </div>
@@ -119,9 +134,9 @@
           <!-- Results view -->
           <div id="results-view" class="hidden">
             <div class="inline-block px-3 py-1 bg-red-500 text-white text-xs font-medium rounded mb-4">
-              Résultats de l'audit
+              {audit.results.badge}
             </div>
-            <h3 class="text-2xl font-serif mb-6">Détail de votre score</h3>
+            <h3 class="text-2xl font-serif mb-6">{audit.results.title}</h3>
 
             <div id="criteria-list" class="space-y-4 mb-8">
               <!-- Criteria will be injected here -->
@@ -129,8 +144,7 @@
 
             <div class="p-4 bg-olive/5 border border-olive/20 rounded-lg mb-6">
               <p class="text-sm leading-relaxed">
-                <strong>Loqal vous aide à devenir réservable en quelques minutes :</strong>
-                gérez votre agenda, vos réservations et votre vitrine en ligne, sans paperasse.
+                <strong>{audit.results.helpText.split(':')[0]}:</strong>{audit.results.helpText.split(':')[1]}
               </p>
             </div>
 
@@ -140,7 +154,7 @@
               id="audit-cta"
               class="inline-flex items-center px-6 py-3 bg-ink text-ivory font-medium rounded hover:bg-olive transition-colors"
             >
-              Rejoignez la liste d'attente pro
+              {audit.results.cta}
               <svg
                 class="w-5 h-5 ml-2"
                 fill="none"
@@ -159,7 +173,7 @@
               id="test-again"
               class="block mt-4 text-sm text-olive hover:underline"
             >
-              ← Tester une autre activité
+              {audit.results.testAgain}
             </button>
           </div>
         </div>
@@ -183,6 +197,46 @@
     city: '',
     url: ''
   };
+
+  // Loading step rotation
+  const loadingSteps = [
+    'Recherche de votre fiche Google…',
+    'Vérification de la réservation en ligne…',
+    'Analyse de votre site mobile…',
+    'Évaluation de vos horaires affichés…'
+  ];
+  let currentStepIndex = 0;
+  let stepRotationInterval: number | null = null;
+
+  function startLoadingSteps() {
+    const loadingDiv = document.getElementById('audit-loading');
+    const stepDiv = document.getElementById('audit-loading-step');
+    const errorDiv = document.getElementById('audit-error');
+    
+    if (loadingDiv && stepDiv && errorDiv) {
+      errorDiv.classList.add('hidden');
+      loadingDiv.classList.remove('hidden');
+      currentStepIndex = 0;
+      stepDiv.textContent = loadingSteps[0];
+      
+      // Rotate steps every 8 seconds
+      stepRotationInterval = window.setInterval(() => {
+        currentStepIndex = (currentStepIndex + 1) % loadingSteps.length;
+        stepDiv.textContent = loadingSteps[currentStepIndex];
+      }, 8000);
+    }
+  }
+
+  function stopLoadingSteps() {
+    const loadingDiv = document.getElementById('audit-loading');
+    if (loadingDiv) {
+      loadingDiv.classList.add('hidden');
+    }
+    if (stepRotationInterval) {
+      clearInterval(stepRotationInterval);
+      stepRotationInterval = null;
+    }
+  }
 
   // Get score color
   function getScoreColor(score: number): string {
@@ -228,6 +282,9 @@
     const criteriaList = document.getElementById('criteria-list');
 
     if (!formView || !resultsView || !criteriaList) return;
+
+    // Stop loading steps
+    stopLoadingSteps();
 
     formView.classList.add('hidden');
     resultsView.classList.remove('hidden');
@@ -283,12 +340,15 @@
       }
     }
 
-    // Disable form
+    // Disable form and show loading
     const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
     if (submitBtn) {
       submitBtn.disabled = true;
       submitBtn.textContent = 'Analyse en cours…';
     }
+
+    // Start loading steps
+    startLoadingSteps();
 
     try {
       if (!isConfigured) {
@@ -332,7 +392,7 @@
           ]
         });
       } else {
-        // Call actual endpoint
+        // Call actual endpoint (no timeout - browser default is ~5 minutes)
         const response = await fetch(auditEndpoint, {
           method: 'POST',
           headers: {
@@ -363,6 +423,7 @@
         showResults(data);
       }
     } catch (error) {
+      stopLoadingSteps();
       if (errorDiv) {
         errorDiv.textContent =
           error instanceof Error
