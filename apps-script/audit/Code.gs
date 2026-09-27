@@ -134,6 +134,129 @@ function handleWaitlist(params) {
 }
 
 /**
+ * Send confirmation email after waitlist registration
+ */
+function sendWaitlistConfirmationEmail(email, type, firstName) {
+  try {
+    // Check if contact@loqal.fr alias is available
+    const aliases = GmailApp.getAliases();
+    const hasContactAlias = aliases.includes('contact@loqal.fr');
+    
+    if (hasContactAlias) {
+      console.log('Sending email from alias: contact@loqal.fr');
+    } else {
+      console.log('Sending email with replyTo: contact@loqal.fr (alias not found)');
+    }
+
+    // Prepare email content based on type
+    const isVisitor = type === 'visiteur';
+    const greeting = firstName ? `${firstName},` : 'Bonjour,';
+    
+    const subject = isVisitor 
+      ? 'Bienvenue sur Loqal'
+      : 'Votre inscription à Loqal';
+
+    // HTML version
+    const htmlBody = createEmailHtml(greeting, isVisitor);
+    
+    // Plain text version
+    const textBody = createEmailText(greeting, isVisitor);
+
+    // Send email
+    const options = {
+      htmlBody: htmlBody,
+      name: 'Loqal',
+      replyTo: 'contact@loqal.fr'
+    };
+
+    if (hasContactAlias) {
+      options.from = 'contact@loqal.fr';
+    }
+
+    GmailApp.sendEmail(email, subject, textBody, options);
+    console.log('Confirmation email sent successfully to:', email);
+
+  } catch (error) {
+    console.error('Error sending confirmation email:', error);
+    throw error;
+  }
+}
+
+/**
+ * Create HTML email body
+ */
+function createEmailHtml(greeting, isVisitor) {
+  const content = isVisitor
+    ? `<p>${greeting}</p>
+       <p>Merci de votre inscription. Vous serez parmi les premiers informés de l'ouverture de Loqal et des premiers domaines viticoles disponibles sur la plateforme.</p>
+       <p>À très bientôt,</p>`
+    : `<p>${greeting}</p>
+       <p>Merci de votre inscription. Nous revenons vers vous très prochainement pour vous présenter Loqal et échanger sur vos besoins.</p>
+       <p>N'hésitez pas à répondre directement à cet e-mail si vous avez des questions.</p>
+       <p>À très bientôt,</p>`;
+
+  return `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Georgia', 'Times New Roman', serif; background-color: #F0EFEA;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #F0EFEA;">
+    <tr>
+      <td align="center" style="padding: 40px 20px;">
+        <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+          <!-- Content -->
+          <tr>
+            <td style="padding: 40px 40px 32px 40px; color: #213B2F; font-size: 16px; line-height: 1.6;">
+              ${content}
+              <p style="margin-top: 24px; margin-bottom: 8px;">
+                <strong>Thomas</strong><br>
+                <span style="color: #69776E;">Fondateur de Loqal</span>
+              </p>
+              <p style="margin: 16px 0;">
+                <img src="https://loqal.fr/logo.png" alt="Loqal" width="130" style="display: block; border: 0;">
+              </p>
+              <p style="margin-top: 8px; margin-bottom: 0;">
+                <a href="https://loqal.fr" style="color: #4C7061; text-decoration: none;">loqal.fr</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+/**
+ * Create plain text email body
+ */
+function createEmailText(greeting, isVisitor) {
+  const content = isVisitor
+    ? `${greeting}
+
+Merci de votre inscription. Vous serez parmi les premiers informés de l'ouverture de Loqal et des premiers domaines viticoles disponibles sur la plateforme.
+
+À très bientôt,`
+    : `${greeting}
+
+Merci de votre inscription. Nous revenons vers vous très prochainement pour vous présenter Loqal et échanger sur vos besoins.
+
+N'hésitez pas à répondre directement à cet e-mail si vous avez des questions.
+
+À très bientôt,`;
+
+  return `${content}
+
+Thomas
+Fondateur de Loqal
+loqal.fr`;
+}
+
+/**
  * Vérifie si un email est déjà enregistré dans la waitlist
  */
 function isEmailAlreadyRegistered(email) {
