@@ -20,11 +20,140 @@ const MAX_AUDITS_PER_HOUR = 20; // Limite anti-abus
 const CACHE_DURATION_HOURS = 24; // Cache des résultats
 
 /**
- * Gère les requêtes POST pour l'audit
+ * Gère les requêtes POST pour l'audit et la waitlist
  */
 function doPost(e) {
   try {
     const params = e.parameter;
+    const action = params.action || 'audit'; // Default to audit for backward compatibility
+    
+    // Route based on action
+    if (action === 'waitlist') {
+      return handleWaitlist(params);
+    } else {
+      return handleAudit(params);
+    }
+  } catch (error) {
+    console.error('Erreur dans doPost:', error);
+    return createResponse({ 
+      error: 'Une erreur est survenue. Veuillez réessayer.',
+      details: error.toString()
+    });
+  }
+}
+
+/**
+ * Gère les inscriptions à la waitlist
+ */
+function handleWaitlist(params) {
+  try {
+    // Honeypot check - reject if 'website' field is filled
+    if (params.website && params.website.trim() !== '') {
+      console.log('Spam detected: honeypot filled');
+      return createResponse({ ok: true }); // Silently accept spam
+    }
+
+    // Validation
+    const email = params.email;
+    const type = params.type; // 'visiteur' or 'professionnel'
+    
+    if (!email || !type) {
+      return createResponse({ error: 'Email et type requis' });
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return createResponse({ error: 'Email invalide' });
+    }
+
+    // Check for duplicate email (simple dedupe)
+    if (isEmailAlreadyRegistered(email)) {
+      console.log('Email already registered:', email);
+      return createResponse({ ok: true }); // Silently accept duplicate
+    }
+
+    // Get or create Waitlist sheet
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName('Waitlist');
+    
+    if (!sheet) {
+      sheet = ss.insertSheet('Waitlist');
+      // Add headers
+      sheet.appendRow([
+        'Date',
+        'Type',
+        'Email',
+        'Nom/Prénom',
+        'Ville',
+        'Activité',
+        'Catégorie',
+        'Téléphone',
+        'Régions',
+        'Centres d\'intérêt'
+      ]);
+      // Freeze header row
+      sheet.setFrozenRows(1);
+    }
+
+    // Prepare row data
+    const rowData = [
+      new Date(),
+      type || '',
+      email || '',
+      params.name || params.firstName || '',
+      params.city || '',
+      params.activityName || '',
+      params.category || '',
+      params.phone || '',
+      params.regions || '',
+      params.interests || '' // Will be comma-separated if array
+    ];
+
+    // Append to sheet
+    sheet.appendRow(rowData);
+
+    return createResponse({ ok: true });
+
+  } catch (error) {
+    console.error('Erreur handleWaitlist:', error);
+    return createResponse({ 
+      error: 'Une erreur est survenue. Veuillez réessayer.',
+      details: error.toString()
+    });
+  }
+}
+
+/**
+ * Vérifie si un email est déjà enregistré dans la waitlist
+ */
+function isEmailAlreadyRegistered(email) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName('Waitlist');
+    
+    if (!sheet) return false;
+    
+    const data = sheet.getDataRange().getValues();
+    // Skip header row (index 0)
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][2] && data[i][2].toString().toLowerCase() === email.toLowerCase()) {
+        return true;
+      }
+    }
+    
+    return false;
+  } catch (error) {
+    console.warn('Erreur isEmailAlreadyRegistered:', error);
+    return false; // On error, allow registration
+  }
+}
+
+/**
+ * Gère les requêtes d'audit (ancienne fonction doPost)
+ */
+function handleAudit(params) {
+  try {
     const activityName = params.activityName;
     const city = params.city;
     const url = params.url || '';
@@ -85,7 +214,7 @@ function doPost(e) {
     return createResponse(result);
 
   } catch (error) {
-    console.error('Erreur dans doPost:', error);
+    console.error('Erreur dans handleAudit:', error);
     return createResponse({ 
       error: 'Une erreur est survenue lors de l\'analyse. Veuillez réessayer.',
       details: error.toString()
