@@ -113,6 +113,15 @@ function handleWaitlist(params) {
     // Append to sheet
     sheet.appendRow(rowData);
 
+    // Send confirmation email (non-blocking)
+    try {
+      const firstName = params.firstName || params.name || '';
+      sendWaitlistConfirmationEmail(email, type, firstName);
+    } catch (emailError) {
+      console.error('Failed to send confirmation email:', emailError);
+      // Don't fail the registration if email fails
+    }
+
     return createResponse({ ok: true });
 
   } catch (error) {
