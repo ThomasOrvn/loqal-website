@@ -1,0 +1,25 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="Page non trouvée - Loqal"
+  description="La page que vous recherchez n'existe pas"
+>
+  <Header />
+  <main class="min-h-screen flex items-center justify-center">
+    <div class="container-custom text-center py-21">
+      <h1 class="text-h1 font-serif mb-6">404</h1>
+      <h2 class="text-2xl mb-4">Page non trouvée</h2>
+      <p class="text-warmgrey mb-8 max-w-md mx-auto">
+        La page que vous recherchez n'existe pas ou a été déplacée.
+      </p>
+      <a href="/" class="btn-primary">
+        Retour à l'accueil
+      </a>
+    </div>
+  </main>
+  <Footer />
+</Layout>

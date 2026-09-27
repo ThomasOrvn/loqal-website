@@ -1,0 +1,181 @@
+---
+import siteData from '../content/site.json';
+---
+
+<header
+  id="header"
+  class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+>
+  <nav class="container-custom py-4 flex items-center justify-between">
+    <a href="/" class="flex items-center">
+      <img
+        src="/logo.png"
+        alt="Loqal"
+        class="h-8 w-auto transition-opacity duration-300"
+        id="logo"
+      />
+    </a>
+
+    <div class="hidden md:flex items-center gap-6">
+      <a
+        href="#visiteurs"
+        class="text-sm font-medium transition-colors duration-200 hover:text-olive"
+      >
+        Visiteurs
+      </a>
+      <a
+        href="#professionnels"
+        class="text-sm font-medium transition-colors duration-200 hover:text-olive"
+      >
+        Professionnels
+      </a>
+      <a
+        href="#faq"
+        class="text-sm font-medium transition-colors duration-200 hover:text-olive"
+      >
+        FAQ
+      </a>
+      <a
+        href="#liste-attente"
+        class="inline-flex items-center px-4 py-2 bg-olive text-ivory text-sm font-medium rounded transition-colors duration-200 hover:bg-ink"
+      >
+        Rejoindre
+      </a>
+    </div>
+
+    <!-- Mobile menu button -->
+    <button
+      id="mobile-menu-button"
+      class="md:hidden p-2 text-ink transition-colors hover:text-olive"
+      aria-label="Menu"
+    >
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div
+    id="mobile-menu"
+    class="hidden md:hidden fixed inset-y-0 right-0 w-72 bg-ivory shadow-2xl transform translate-x-full transition-transform duration-300"
+  >
+    <div class="p-6">
+      <button
+        id="mobile-menu-close"
+        class="absolute top-6 right-6 p-2 text-ink hover:text-olive"
+        aria-label="Fermer"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+
+      <nav class="mt-12 flex flex-col gap-6">
+        <a
+          href="#visiteurs"
+          class="text-lg font-medium transition-colors duration-200 hover:text-olive mobile-link"
+        >
+          Visiteurs
+        </a>
+        <a
+          href="#professionnels"
+          class="text-lg font-medium transition-colors duration-200 hover:text-olive mobile-link"
+        >
+          Professionnels
+        </a>
+        <a
+          href="#faq"
+          class="text-lg font-medium transition-colors duration-200 hover:text-olive mobile-link"
+        >
+          FAQ
+        </a>
+        <a
+          href="#liste-attente"
+          class="inline-flex items-center justify-center px-6 py-3 bg-olive text-ivory font-medium rounded transition-colors duration-200 hover:bg-ink mobile-link"
+        >
+          Rejoindre la liste d'attente
+        </a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Scroll behavior for header
+  const header = document.getElementById('header');
+  const logo = document.getElementById('logo');
+  
+  let lastScroll = 0;
+  const heroHeight = 600; // Approximate hero height
+
+  window.addEventListener('scroll', () => {
+    const currentScroll = window.scrollY;
+
+    if (currentScroll > heroHeight) {
+      header?.classList.add('bg-ivory', 'shadow-md');
+      header?.classList.remove('text-ivory');
+      header?.classList.add('text-ink');
+    } else {
+      header?.classList.remove('bg-ivory', 'shadow-md');
+      header?.classList.add('text-ivory');
+      header?.classList.remove('text-ink');
+    }
+
+    lastScroll = currentScroll;
+  });
+
+  // Mobile menu
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileMenuClose = document.getElementById('mobile-menu-close');
+  const mobileLinks = document.querySelectorAll('.mobile-link');
+
+  mobileMenuButton?.addEventListener('click', () => {
+    mobileMenu?.classList.remove('hidden');
+    setTimeout(() => {
+      mobileMenu?.classList.remove('translate-x-full');
+    }, 10);
+  });
+
+  const closeMenu = () => {
+    mobileMenu?.classList.add('translate-x-full');
+    setTimeout(() => {
+      mobileMenu?.classList.add('hidden');
+    }, 300);
+  };
+
+  mobileMenuClose?.addEventListener('click', closeMenu);
+
+  mobileLinks.forEach((link) => {
+    link.addEventListener('click', closeMenu);
+  });
+</script>
+
+<style>
+  #header.text-ivory a:not(.bg-olive) {
+    color: rgba(240, 239, 234, 0.9);
+  }
+  
+  #header.text-ivory a:not(.bg-olive):hover {
+    color: rgba(240, 239, 234, 1);
+  }
+
+  /* Light logo version on dark background */
+  #header.text-ivory #logo {
+    filter: brightness(0) invert(1);
+  }
+</style>

@@ -1,0 +1,42 @@
+---
+import siteData from '../content/site.json';
+
+const { faq } = siteData;
+---
+
+<section id="faq" class="section-padding section-border">
+  <div class="container-custom">
+    <div class="text-center mb-12">
+      <p class="small-caps text-warmgrey mb-4">{faq.eyebrow}</p>
+      <h2 class="text-h2 font-serif max-w-3xl mx-auto">{faq.title}</h2>
+    </div>
+
+    <div class="max-w-3xl mx-auto space-y-4">
+      {
+        faq.items.map((item, index) => (
+          <details class="card group">
+            <summary class="cursor-pointer list-none font-semibold text-lg flex justify-between items-center">
+              <span>{item.question}</span>
+              <svg
+                class="w-5 h-5 text-olive transition-transform group-open:rotate-45"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+            </summary>
+            <div class="mt-4 pt-4 border-t border-borderline text-warmgrey leading-relaxed">
+              {item.answer}
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>

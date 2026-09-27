@@ -1,0 +1,386 @@
+---
+import siteData from '../content/site.json';
+
+const { waitlist } = siteData;
+---
+
+<section id="liste-attente" class="section-padding section-border bg-ink/[0.02]">
+  <div class="container-custom">
+    <div class="text-center mb-12">
+      <p class="small-caps text-warmgrey mb-4">{waitlist.eyebrow}</p>
+      <h2 class="text-h2 font-serif max-w-3xl mx-auto">{waitlist.title}</h2>
+    </div>
+
+    <div class="max-w-2xl mx-auto">
+      <!-- Tabs -->
+      <div class="flex border border-borderline rounded-lg overflow-hidden mb-8">
+        <button
+          id="tab-visitor"
+          class="flex-1 py-4 font-medium transition-colors bg-ivory hover:bg-olive/5"
+          data-tab="visitor"
+        >
+          {waitlist.visitor.title}
+        </button>
+        <button
+          id="tab-pro"
+          class="flex-1 py-4 font-medium transition-colors hover:bg-olive/5"
+          data-tab="pro"
+        >
+          {waitlist.pro.title}
+        </button>
+      </div>
+
+      <!-- Visitor Form -->
+      <form
+        id="form-visitor"
+        class="card space-y-6"
+        data-form="visitor"
+      >
+        <input type="hidden" name="type" value="visiteur" />
+        
+        <!-- Honeypot field -->
+        <div class="hidden" aria-hidden="true">
+          <label for="website_visitor">Website</label>
+          <input type="text" id="website_visitor" name="website" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <div>
+          <label for="firstName" class="block text-sm font-medium mb-2">
+            {waitlist.visitor.fields.firstName}
+          </label>
+          <input
+            type="text"
+            id="firstName"
+            name="firstName"
+            required
+            class="w-full px-4 py-3 bg-ivory border border-borderline rounded transition-colors focus:border-olive focus:ring-2 focus:ring-olive/10"
+          />
+        </div>
+
+        <div>
+          <label for="email_visitor" class="block text-sm font-medium mb-2">
+            {waitlist.visitor.fields.email}
+          </label>
+          <input
+            type="email"
+            id="email_visitor"
+            name="email"
+            required
+            class="w-full px-4 py-3 bg-ivory border border-borderline rounded transition-colors focus:border-olive focus:ring-2 focus:ring-olive/10"
+          />
+        </div>
+
+        <div>
+          <label for="regions" class="block text-sm font-medium mb-2">
+            {waitlist.visitor.fields.regions}
+          </label>
+          <input
+            type="text"
+            id="regions"
+            name="regions"
+            placeholder="Ex: Bourgogne, Provence..."
+            class="w-full px-4 py-3 bg-ivory border border-borderline rounded transition-colors focus:border-olive focus:ring-2 focus:ring-olive/10"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-3">
+            {waitlist.visitor.fields.interests}
+          </label>
+          <div class="grid grid-cols-2 gap-3">
+            {
+              waitlist.visitor.interestOptions.map((interest) => (
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="interests"
+                    value={interest}
+                    class="w-4 h-4 text-olive border-borderline rounded focus:ring-olive"
+                  />
+                  <span class="text-sm">{interest}</span>
+                </label>
+              ))
+            }
+          </div>
+        </div>
+
+        <div>
+          <label class="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              name="consent"
+              required
+              class="mt-1 w-4 h-4 text-olive border-borderline rounded focus:ring-olive"
+            />
+            <span class="text-sm text-warmgrey">
+              {waitlist.visitor.consent}
+              <a
+                href="/politique-confidentialite"
+                class="text-olive hover:underline"
+              >
+                politique de confidentialité
+              </a>.
+            </span>
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          class="btn-primary w-full"
+        >
+          {waitlist.visitor.submit}
+        </button>
+
+        <div
+          id="message-visitor"
+          class="hidden p-4 rounded text-sm"
+        ></div>
+      </form>
+
+      <!-- Pro Form -->
+      <form
+        id="form-pro"
+        class="card space-y-6 hidden"
+        data-form="pro"
+      >
+        <input type="hidden" name="type" value="professionnel" />
+        
+        <!-- Honeypot field -->
+        <div class="hidden" aria-hidden="true">
+          <label for="website_pro">Website</label>
+          <input type="text" id="website_pro" name="website" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <div>
+          <label for="name" class="block text-sm font-medium mb-2">
+            {waitlist.pro.fields.name}
+          </label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            class="w-full px-4 py-3 bg-ivory border border-borderline rounded transition-colors focus:border-olive focus:ring-2 focus:ring-olive/10"
+          />
+        </div>
+
+        <div>
+          <label for="email_pro" class="block text-sm font-medium mb-2">
+            {waitlist.pro.fields.email}
+          </label>
+          <input
+            type="email"
+            id="email_pro"
+            name="email"
+            required
+            class="w-full px-4 py-3 bg-ivory border border-borderline rounded transition-colors focus:border-olive focus:ring-2 focus:ring-olive/10"
+          />
+        </div>
+
+        <div>
+          <label for="activityName" class="block text-sm font-medium mb-2">
+            {waitlist.pro.fields.activityName}
+          </label>
+          <input
+            type="text"
+            id="activityName"
+            name="activityName"
+            required
+            class="w-full px-4 py-3 bg-ivory border border-borderline rounded transition-colors focus:border-olive focus:ring-2 focus:ring-olive/10"
+          />
+        </div>
+
+        <div>
+          <label for="category" class="block text-sm font-medium mb-2">
+            {waitlist.pro.fields.category}
+          </label>
+          <select
+            id="category"
+            name="category"
+            required
+            class="w-full px-4 py-3 bg-ivory border border-borderline rounded transition-colors focus:border-olive focus:ring-2 focus:ring-olive/10"
+          >
+            <option value="">Sélectionnez...</option>
+            {
+              waitlist.pro.categoryOptions.map((category) => (
+                <option value={category}>{category}</option>
+              ))
+            }
+          </select>
+        </div>
+
+        <div>
+          <label for="city" class="block text-sm font-medium mb-2">
+            {waitlist.pro.fields.city}
+          </label>
+          <input
+            type="text"
+            id="city"
+            name="city"
+            required
+            class="w-full px-4 py-3 bg-ivory border border-borderline rounded transition-colors focus:border-olive focus:ring-2 focus:ring-olive/10"
+          />
+        </div>
+
+        <div>
+          <label for="phone" class="block text-sm font-medium mb-2">
+            {waitlist.pro.fields.phone}
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            class="w-full px-4 py-3 bg-ivory border border-borderline rounded transition-colors focus:border-olive focus:ring-2 focus:ring-olive/10"
+          />
+        </div>
+
+        <div>
+          <label class="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              name="consent"
+              required
+              class="mt-1 w-4 h-4 text-olive border-borderline rounded focus:ring-olive"
+            />
+            <span class="text-sm text-warmgrey">
+              {waitlist.pro.consent}
+              <a
+                href="/politique-confidentialite"
+                class="text-olive hover:underline"
+              >
+                politique de confidentialité
+              </a>.
+            </span>
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          class="btn-primary w-full"
+        >
+          {waitlist.pro.submit}
+        </button>
+
+        <div
+          id="message-pro"
+          class="hidden p-4 rounded text-sm"
+        ></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Get endpoint from env or use placeholder
+  const WAITLIST_ENDPOINT = import.meta.env.PUBLIC_WAITLIST_ENDPOINT || '';
+
+  // Tab switching
+  const tabVisitor = document.getElementById('tab-visitor');
+  const tabPro = document.getElementById('tab-pro');
+  const formVisitor = document.getElementById('form-visitor');
+  const formPro = document.getElementById('form-pro');
+
+  function switchTab(tab: string) {
+    if (tab === 'visitor') {
+      tabVisitor?.classList.add('bg-ivory');
+      tabVisitor?.classList.remove('hover:bg-olive/5');
+      tabPro?.classList.remove('bg-ivory');
+      tabPro?.classList.add('hover:bg-olive/5');
+      formVisitor?.classList.remove('hidden');
+      formPro?.classList.add('hidden');
+    } else {
+      tabPro?.classList.add('bg-ivory');
+      tabPro?.classList.remove('hover:bg-olive/5');
+      tabVisitor?.classList.remove('bg-ivory');
+      tabVisitor?.classList.add('hover:bg-olive/5');
+      formPro?.classList.remove('hidden');
+      formVisitor?.classList.add('hidden');
+    }
+  }
+
+  tabVisitor?.addEventListener('click', () => switchTab('visitor'));
+  tabPro?.addEventListener('click', () => switchTab('pro'));
+
+  // Listen for tab switch event from Hero CTAs
+  window.addEventListener('switchWaitlistTab', ((e: CustomEvent) => {
+    switchTab(e.detail.tab);
+  }) as EventListener);
+
+  // Form submissions
+  async function handleSubmit(e: Event, formType: string) {
+    e.preventDefault();
+    
+    const form = e.target as HTMLFormElement;
+    const messageEl = document.getElementById(`message-${formType}`);
+    const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    
+    if (!messageEl || !submitBtn) return;
+
+    // Check honeypot
+    const honeypot = form.querySelector('input[name="website"]') as HTMLInputElement;
+    if (honeypot && honeypot.value) {
+      console.log('Spam detected');
+      return;
+    }
+
+    // Disable submit button
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Envoi en cours...';
+
+    // Collect form data
+    const formData = new FormData(form);
+    const data: Record<string, any> = {};
+    
+    formData.forEach((value, key) => {
+      if (key === 'interests') {
+        if (!data.interests) data.interests = [];
+        data.interests.push(value);
+      } else if (key !== 'website') {
+        data[key] = value;
+      }
+    });
+
+    // Format interests as comma-separated string
+    if (data.interests) {
+      data.interests = data.interests.join(', ');
+    }
+
+    try {
+      if (!WAITLIST_ENDPOINT) {
+        throw new Error('Endpoint not configured');
+      }
+
+      const response = await fetch(WAITLIST_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      // Success
+      messageEl.textContent = 'Merci ! Vous recevrez un email dès que Loqal sera disponible.';
+      messageEl.className = 'p-4 rounded text-sm bg-olive/10 text-olive border border-olive/20';
+      messageEl.classList.remove('hidden');
+      form.reset();
+    } catch (error) {
+      // Error
+      messageEl.textContent = 'Une erreur est survenue. Veuillez réessayer ou nous contacter directement.';
+      messageEl.className = 'p-4 rounded text-sm bg-red-50 text-red-700 border border-red-200';
+      messageEl.classList.remove('hidden');
+    } finally {
+      // Re-enable submit button
+      submitBtn.disabled = false;
+      submitBtn.textContent = formType === 'visitor' 
+        ? 'Être prévenu du lancement' 
+        : 'Réserver ma place de pro fondateur';
+    }
+  }
+
+  formVisitor?.addEventListener('submit', (e) => handleSubmit(e, 'visitor'));
+  formPro?.addEventListener('submit', (e) => handleSubmit(e, 'pro'));
+</script>

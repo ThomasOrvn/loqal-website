@@ -1,0 +1,66 @@
+---
+import siteData from '../content/site.json';
+
+const { footer, meta } = siteData;
+---
+
+<footer class="bg-ink text-ivory border-t border-ivory/10">
+  <div class="container-custom py-12">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+      <!-- Brand -->
+      <div>
+        <img
+          src="/logo.png"
+          alt="Loqal"
+          class="h-8 w-auto mb-4 brightness-0 invert"
+        />
+        <p class="text-sm text-ivory/70">{footer.tagline}</p>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <h3 class="font-sans text-sm font-semibold mb-3 uppercase tracking-wider">
+          Contact
+        </h3>
+        <div class="space-y-2">
+          <a
+            href={`mailto:${meta.emails.contact}`}
+            class="block text-sm text-ivory/70 hover:text-ivory transition-colors"
+          >
+            {meta.emails.contact}
+          </a>
+          <a
+            href={`mailto:${meta.emails.thomas}`}
+            class="block text-sm text-ivory/70 hover:text-ivory transition-colors"
+          >
+            {meta.emails.thomas}
+          </a>
+        </div>
+      </div>
+
+      <!-- Legal -->
+      <div>
+        <h3 class="font-sans text-sm font-semibold mb-3 uppercase tracking-wider">
+          Légal
+        </h3>
+        <div class="space-y-2">
+          {
+            footer.legal.map((link) => (
+              <a
+                href={link.href}
+                class="block text-sm text-ivory/70 hover:text-ivory transition-colors"
+              >
+                {link.label}
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Copyright -->
+    <div class="pt-8 border-t border-ivory/10">
+      <p class="text-sm text-ivory/50 text-center">{footer.copyright}</p>
+    </div>
+  </div>
+</footer>

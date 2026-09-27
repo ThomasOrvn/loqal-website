@@ -1,2 +1,270 @@
-# loqal-website
-1st commit
+# Loqal – Site vitrine
+
+Site vitrine statique pour Loqal, la plateforme qui connecte les passionnés du terroir avec les vignerons, artisans et guides locaux.
+
+## 🚀 Démarrage rapide
+
+### Prérequis
+
+- Node.js 18+ installé
+- npm ou yarn
+
+### Installation
+
+```bash
+# Installer les dépendances
+npm install
+
+# Lancer le serveur de développement
+npm run dev
+```
+
+Le site sera accessible sur `http://localhost:4321`
+
+## 📝 Modifier les contenus
+
+### Textes du site
+
+Tous les textes sont centralisés dans un seul fichier JSON pour faciliter les modifications :
+
+**`src/content/site.json`**
+
+Ce fichier contient :
+- Les textes du hero (titre, sous-titre, boutons)
+- Les univers du terroir
+- Les sections visiteurs et professionnels
+- La présentation du fondateur
+- La FAQ
+- Les formulaires de liste d'attente
+- Le footer
+
+Pour modifier un texte, éditez simplement ce fichier et relancez le serveur de dev.
+
+### Pages légales
+
+Les mentions légales et la politique de confidentialité contiennent des **placeholders** à compléter :
+
+- `src/pages/mentions-legales.astro` : remplacez `[SIRET À COMPLÉTER]`, `[ADRESSE À COMPLÉTER]`, etc.
+- `src/pages/politique-confidentialite.astro` : même chose
+
+### Images
+
+Les images sont dans le dossier `public/` :
+- `public/logo.png` : logo Loqal (version sombre)
+- `public/favicon.ico` : favicon du site
+- `public/og-image.jpg` : image de partage sur les réseaux sociaux (à générer)
+- `public/vineyard.jpg`, `public/chateau.jpg` : photos placeholder
+
+**Pour remplacer les placeholders d'images :**
+1. Ajoutez vos photos dans `public/`
+2. Modifiez les chemins dans les composants (`src/components/*.astro`)
+
+## 🎨 Générer l'image OG (Open Graph)
+
+L'image OG s'affiche quand vous partagez le site sur les réseaux sociaux.
+
+**⚠️ Important :** Cette image n'est pas encore générée. Suivez ces étapes :
+
+1. Ouvrez `og-image-generator.html` dans un navigateur
+2. Prenez une capture d'écran exacte de la zone 1200×630px affichée
+3. Enregistrez-la sous `public/og-image.jpg`
+4. Optionnel : optimisez avec [TinyPNG](https://tinypng.com)
+
+💡 Jusqu'à ce que l'image soit générée, un fallback par défaut sera utilisé par les réseaux sociaux.
+
+## 📮 Configuration de la liste d'attente
+
+Le formulaire de liste d'attente envoie les données vers un Google Apps Script.
+
+### Étape 1 : Créer le Google Sheet
+
+1. Créez un nouveau Google Sheets
+2. Créez deux onglets :
+   - **Visiteurs** (colonnes : Date | Prénom | Email | Régions | Centres d'intérêt)
+   - **Professionnels** (colonnes : Date | Nom | Email | Activité | Catégorie | Commune | Téléphone)
+
+### Étape 2 : Déployer le script
+
+1. Dans Google Sheets, allez dans **Extensions > Apps Script**
+2. Supprimez le code par défaut
+3. Copiez-collez le contenu de `scripts/waitlist-apps-script.gs`
+4. Enregistrez (Ctrl+S ou Cmd+S)
+5. Cliquez sur **Déployer > Nouveau déploiement**
+   - Type : **Application Web**
+   - Exécuter en tant que : **Moi**
+   - Qui a accès : **Tout le monde**
+6. Autorisez l'application
+7. Copiez l'URL du déploiement (ressemble à `https://script.google.com/macros/s/.../exec`)
+
+### Étape 3 : Configurer l'URL dans le site
+
+1. Créez un fichier `.env` à la racine du projet :
+
+```bash
+PUBLIC_WAITLIST_ENDPOINT=https://script.google.com/macros/s/VOTRE_ID_SCRIPT/exec
+```
+
+2. Redémarrez le serveur de dev
+
+### Test
+
+Remplissez le formulaire sur le site. Les données doivent apparaître dans votre Google Sheet.
+
+## 🌐 Déploiement sur GitHub Pages
+
+Le site est hébergé gratuitement sur **GitHub Pages** avec le domaine personnalisé `loqal.fr`.
+
+### Configuration du repository
+
+Le site est déployé automatiquement depuis le repository public **ThomasOrvn/loqal-website**.
+
+### Étape 1 : Activer GitHub Pages
+
+1. Allez dans les **Settings** du repository sur GitHub
+2. Section **Pages** (dans le menu latéral)
+3. Sous **Source**, sélectionnez **GitHub Actions** (au lieu de "Deploy from a branch")
+4. Enregistrez
+
+### Étape 2 : Configurer le DNS chez votre registrar
+
+Connectez-vous chez votre registrar (Gandi, OVH, etc.) et configurez les enregistrements DNS pour `loqal.fr` :
+
+#### Enregistrements A (IPv4) :
+Ajoutez ces 4 enregistrements A pointant vers les serveurs GitHub Pages :
+
+```
+Type: A    Nom: @    Valeur: 185.199.108.153
+Type: A    Nom: @    Valeur: 185.199.109.153
+Type: A    Nom: @    Valeur: 185.199.110.153
+Type: A    Nom: @    Valeur: 185.199.111.153
+```
+
+#### Enregistrements AAAA (IPv6) :
+Ajoutez ces 4 enregistrements AAAA :
+
+```
+Type: AAAA    Nom: @    Valeur: 2606:50c0:8000::153
+Type: AAAA    Nom: @    Valeur: 2606:50c0:8001::153
+Type: AAAA    Nom: @    Valeur: 2606:50c0:8002::153
+Type: AAAA    Nom: @    Valeur: 2606:50c0:8003::153
+```
+
+#### Enregistrement CNAME pour www :
+Redirigez le sous-domaine www vers votre site GitHub Pages :
+
+```
+Type: CNAME    Nom: www    Valeur: thomasorvn.github.io.
+```
+
+⚠️ **Important** : Notez le point final dans `thomasorvn.github.io.`
+
+### Étape 3 : Activer HTTPS
+
+Une fois les DNS propagés (15 minutes à 48h selon les registrars) :
+
+1. Retournez dans **Settings > Pages** sur GitHub
+2. Cochez **Enforce HTTPS**
+3. Attendez que le certificat SSL soit provisionné (quelques minutes)
+
+### Étape 4 : Vérifier le déploiement
+
+1. Chaque push sur la branche `main` déclenche automatiquement un déploiement
+2. Suivez la progression dans l'onglet **Actions** du repository
+3. Une fois terminé, votre site est en ligne sur https://loqal.fr
+
+### Variables d'environnement
+
+Pour configurer l'URL du script Google Apps Script de la liste d'attente :
+
+1. Créez un fichier `.env` à la racine du projet (en local uniquement) :
+
+```bash
+PUBLIC_WAITLIST_ENDPOINT=https://script.google.com/macros/s/VOTRE_ID_SCRIPT/exec
+```
+
+2. Commitez et pushez vos changements
+3. Le workflow GitHub Actions build le site avec la variable
+
+⚠️ **Note** : `PUBLIC_WAITLIST_ENDPOINT` est une variable publique (préfixe `PUBLIC_`). Elle est incluse dans le code JavaScript côté client et n'est pas un secret. Ne mettez jamais de clés API privées ou de secrets dans ce fichier.
+
+### Workflow GitHub Actions
+
+Le fichier `.github/workflows/deploy.yml` est déjà configuré pour :
+- Builder le site à chaque push sur `main`
+- Déployer automatiquement sur GitHub Pages
+- Inclure le fichier `CNAME` pour le domaine personnalisé
+
+Vous n'avez rien à faire, tout est automatique !
+
+## 🛠️ Commandes npm
+
+```bash
+# Développement
+npm run dev              # Lance le serveur de dev sur localhost:4321
+
+# Production
+npm run build            # Build le site dans dist/
+npm run preview          # Prévisualise le build en local
+
+# Checks
+npm run astro check      # Vérifie les erreurs TypeScript et Astro
+```
+
+## 📁 Structure du projet
+
+```
+/
+├── public/              # Assets statiques (images, favicon, robots.txt)
+├── scripts/             # Script Google Apps Script pour la waitlist
+├── src/
+│   ├── components/      # Composants Astro réutilisables
+│   ├── content/         # Fichier JSON avec tous les textes
+│   ├── layouts/         # Layout principal
+│   ├── pages/           # Pages du site (index, legal, 404)
+│   └── styles/          # CSS global et Tailwind
+├── astro.config.mjs     # Config Astro
+├── tailwind.config.mjs  # Config Tailwind (couleurs, fonts...)
+└── package.json
+```
+
+## 🎨 Design system
+
+Le design system Loqal est configuré dans `tailwind.config.mjs` et `src/styles/global.css`.
+
+### Couleurs
+
+- **Ink** (#213B2F) : vert forêt, texte principal, fond hero/footer
+- **Ivory** (#F0EFEA) : fond de page, texte sur fond sombre
+- **Olive** (#4C7061) : accents, hover, focus
+- **Warm Grey** (#69776E) : texte secondaire
+
+### Typographie
+
+- **Fraunces** (serif) : titres (h1, h2, h3, h4)
+- **Inter** (sans-serif) : texte courant, UI
+
+## 🔧 Maintenance
+
+### Ajouter une nouvelle section
+
+1. Créez un composant dans `src/components/`
+2. Importez-le dans `src/pages/index.astro`
+3. Ajoutez les textes dans `src/content/site.json`
+
+### Modifier les couleurs
+
+Éditez `tailwind.config.mjs` dans la section `theme.extend.colors`.
+
+### Ajouter une page
+
+Créez un fichier `.astro` dans `src/pages/`. Astro génère automatiquement les routes :
+- `src/pages/about.astro` → `/about`
+- `src/pages/blog/post.astro` → `/blog/post`
+
+## 📧 Support
+
+Questions ? Contactez Thomas à [thomas@loqal.fr](mailto:thomas@loqal.fr)
+
+## 📄 Licence
+
+© 2026 Loqal. Tous droits réservés.

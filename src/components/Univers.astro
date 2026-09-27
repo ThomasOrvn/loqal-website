@@ -1,0 +1,42 @@
+---
+import siteData from '../content/site.json';
+
+const { univers } = siteData;
+
+// Define placeholder images for each universe
+const placeholders = [
+  '/vineyard.jpg', // Vin (we have a real vineyard image)
+  'https://placehold.co/600x400/4C7061/F0EFEA?text=Artisanat',
+  'https://placehold.co/600x400/4C7061/F0EFEA?text=Pêche',
+  'https://placehold.co/600x400/4C7061/F0EFEA?text=Chasse',
+  'https://placehold.co/600x400/4C7061/F0EFEA?text=Gastronomie',
+  'https://placehold.co/600x400/4C7061/F0EFEA?text=Savoir-faire',
+];
+---
+
+<section id="univers" class="section-padding section-border">
+  <div class="container-custom">
+    <div class="text-center mb-12">
+      <p class="small-caps text-warmgrey mb-4">{univers.eyebrow}</p>
+      <h2 class="text-h2 font-serif max-w-3xl mx-auto">{univers.title}</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {
+        univers.items.map((item, index) => (
+          <div class="card hover:shadow-lg transition-shadow group">
+            <div class="aspect-[4/3] bg-warmgrey/10 rounded mb-4 overflow-hidden">
+              <img
+                src={placeholders[index]}
+                alt={item.title}
+                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            </div>
+            <h4 class="font-serif text-xl font-medium mb-2">{item.title}</h4>
+            <p class="text-warmgrey text-sm">{item.description}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

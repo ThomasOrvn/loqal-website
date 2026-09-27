@@ -1,0 +1,56 @@
+---
+import siteData from '../content/site.json';
+
+const { visitors } = siteData;
+---
+
+<section id="visiteurs" class="section-padding section-border">
+  <div class="container-custom">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <!-- Content -->
+      <div class="order-2 lg:order-1">
+        <p class="small-caps text-warmgrey mb-4">{visitors.eyebrow}</p>
+        <h2 class="text-h2 font-serif mb-6">{visitors.title}</h2>
+        <p class="text-lg text-warmgrey mb-8 leading-relaxed">
+          {visitors.description}
+        </p>
+
+        <div class="space-y-6">
+          {
+            visitors.steps.map((step, index) => (
+              <div class="flex gap-4">
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-olive/10 text-olive flex items-center justify-center font-semibold text-sm">
+                  {index + 1}
+                </div>
+                <div>
+                  <h4 class="font-sans font-semibold mb-1">{step.title}</h4>
+                  <p class="text-warmgrey text-sm">{step.description}</p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- Visual -->
+      <div class="order-1 lg:order-2">
+        <div class="relative">
+          <div class="aspect-[3/4] bg-warmgrey/10 rounded-lg overflow-hidden">
+            <img
+              src="https://placehold.co/600x800/213B2F/F0EFEA?text=Interface+mobile"
+              alt="Interface Loqal pour visiteurs"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <!-- Floating card with mock stats -->
+          <div
+            class="absolute top-8 -left-4 bg-ivory border border-borderline rounded-lg shadow-xl p-4 max-w-[160px]"
+          >
+            <div class="text-3xl font-serif mb-1">12</div>
+            <div class="text-xs text-warmgrey">Vignerons près de vous</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Univers from '../components/Univers.astro';
+import Visitors from '../components/Visitors.astro';
+import Pros from '../components/Pros.astro';
+import Founder from '../components/Founder.astro';
+import FAQ from '../components/FAQ.astro';
+import Waitlist from '../components/Waitlist.astro';
+import Footer from '../components/Footer.astro';
+import siteData from '../content/site.json';
+
+const { meta } = siteData;
+---
+
+<Layout title={meta.title} description={meta.description}>
+  <Header />
+  <main>
+    <Hero />
+    <Univers />
+    <Visitors />
+    <Pros />
+    <Founder />
+    <FAQ />
+    <Waitlist />
+  </main>
+  <Footer />
+</Layout>
