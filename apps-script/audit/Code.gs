@@ -668,14 +668,45 @@ function createResponse(data) {
 }
 
 /**
- * Gère les requêtes GET
+ * Function to authorize Gmail sending permissions
+ * Run this once in Apps Script editor to trigger OAuth consent screen
+ * Menu: Run > authorizeEmail
  */
-function doGet(e) {
-  return createResponse({ 
-    error: 'Utilisez POST pour soumettre un audit',
-    info: 'Script d\'audit Loqal avec Gemini AI'
-  });
+function authorizeEmail() {
+  try {
+    // Check aliases (requires gmail.settings.basic scope)
+    const aliases = GmailApp.getAliases();
+    console.log('Available aliases:', aliases.join(', '));
+    
+    // Send test email (requires gmail.send scope)
+    // Using thomas@loqal.fr for authorization test
+    const testEmail = 'thomas@loqal.fr';
+    console.log('Sending authorization test email to:', testEmail);
+    
+    GmailApp.sendEmail(
+      testEmail,
+      'Loqal - Test d\'autorisation Gmail',
+      'Ce message confirme que les permissions Gmail ont été accordées avec succès.\n\nVous pouvez ignorer cet e-mail.',
+      {
+        name: 'Loqal',
+        replyTo: 'contact@loqal.fr'
+      }
+    );
+    
+    console.log('✅ Authorization successful! Email permissions granted.');
+    console.log('You can now close this and the waitlist confirmation emails will work.');
+    
+    return {
+      success: true,
+      aliases: aliases,
+      message: 'Email permissions authorized successfully'
+    };
+  } catch (error) {
+    console.error('❌ Authorization failed:', error);
+    throw error;
+  }
 }
+
 
 /**
  * Fonction de test pour diagnostiquer l'API Gemini depuis l'éditeur Apps Script
