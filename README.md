@@ -86,7 +86,7 @@ Le formulaire de liste d'attente envoie les données vers un Google Apps Script.
 
 1. Dans Google Sheets, allez dans **Extensions > Apps Script**
 2. Supprimez le code par défaut
-3. Copiez-collez le contenu de `scripts/waitlist-apps-script.gs`
+3. Copiez-collez le contenu de `apps-script/waitlist/Code.gs`
 4. Enregistrez (Ctrl+S ou Cmd+S)
 5. Cliquez sur **Déployer > Nouveau déploiement**
    - Type : **Application Web**
@@ -133,7 +133,7 @@ L'audit de réservabilité utilise l'API Gemini de Google avec recherche web (gr
 
 1. Dans Google Sheets, allez dans **Extensions > Apps Script**
 2. Supprimez le code par défaut
-3. Copiez-collez le contenu de `scripts/audit-apps-script.gs`
+3. Copiez-collez le contenu de `apps-script/audit/Code.gs`
 4. Enregistrez (Ctrl+S ou Cmd+S)
 
 ### Étape 4 : Ajouter la clé API Gemini comme propriété de script
@@ -215,7 +215,7 @@ L'API Gemini avec recherche Google (grounding) analyse 4 critères pour un score
 Quand le code du script change (nouvelle version dans `scripts/audit-apps-script.gs`) :
 
 1. **Copier le nouveau code**
-   - Ouvrez `scripts/audit-apps-script.gs`
+   - Ouvrez `apps-script/audit/Code.gs`
    - Sélectionnez tout (Ctrl+A / Cmd+A) et copiez
 
 2. **Mettre à jour dans Apps Script**

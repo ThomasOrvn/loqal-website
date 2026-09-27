@@ -22,18 +22,22 @@ jobs:
           node-version: '22'
 
       - name: Check required secrets and variables
+        env:
+          CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
+          AUDIT_ID: ${{ vars.APPS_SCRIPT_AUDIT_ID }}
+          AUDIT_DEPLOYMENT_ID: ${{ vars.APPS_SCRIPT_AUDIT_DEPLOYMENT_ID }}
         run: |
-          if [ -z "${{ secrets.CLASPRC_JSON }}" ]; then
+          if [ -z "$CLASPRC_JSON" ]; then
             echo "❌ Error: Secret CLASPRC_JSON is not set"
             echo "Please add your ~/.clasprc.json content as a repository secret"
             exit 1
           fi
-          if [ -z "${{ vars.APPS_SCRIPT_AUDIT_ID }}" ]; then
+          if [ -z "$AUDIT_ID" ]; then
             echo "❌ Error: Variable APPS_SCRIPT_AUDIT_ID is not set"
             echo "Please add your audit script ID as a repository variable"
             exit 1
           fi
-          if [ -z "${{ vars.APPS_SCRIPT_AUDIT_DEPLOYMENT_ID }}" ]; then
+          if [ -z "$AUDIT_DEPLOYMENT_ID" ]; then
             echo "❌ Error: Variable APPS_SCRIPT_AUDIT_DEPLOYMENT_ID is not set"
             echo "Please add your audit deployment ID as a repository variable"
             exit 1
@@ -44,19 +48,25 @@ jobs:
         run: npm install -g @google/clasp@2.4.2
 
       - name: Setup clasp authentication
+        env:
+          CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
         run: |
           mkdir -p ~/.config/clasp
-          echo '${{ secrets.CLASPRC_JSON }}' > ~/.clasprc.json
+          printf '%s\n' "$CLASPRC_JSON" > ~/.clasprc.json
           echo "✅ Clasp authentication configured"
 
       - name: Deploy audit script
+        env:
+          SCRIPT_ID: ${{ vars.APPS_SCRIPT_AUDIT_ID }}
+          DEPLOYMENT_ID: ${{ vars.APPS_SCRIPT_AUDIT_DEPLOYMENT_ID }}
+          COMMIT_SHA: ${{ github.sha }}
         run: |
           cd apps-script/audit
           
           # Create .clasp.json with the script ID
           cat > .clasp.json << EOF
           {
-            "scriptId": "${{ vars.APPS_SCRIPT_AUDIT_ID }}",
+            "scriptId": "$SCRIPT_ID",
             "rootDir": "."
           }
           EOF
@@ -64,24 +74,24 @@ jobs:
           echo "📤 Pushing code to Apps Script..."
           clasp push --force
           
-          echo "📦 Creating new version..."
-          VERSION=$(clasp version "Deploy from GitHub Actions - commit ${{ github.sha }}" | grep -oP '\d+$')
-          echo "Created version: $VERSION"
-          
-          echo "🚀 Deploying version $VERSION to deployment ${{ vars.APPS_SCRIPT_AUDIT_DEPLOYMENT_ID }}..."
-          clasp deploy --deploymentId "${{ vars.APPS_SCRIPT_AUDIT_DEPLOYMENT_ID }}" --versionNumber "$VERSION" --description "Auto-deploy from commit ${{ github.sha }}"
+          echo "🚀 Deploying to deployment $DEPLOYMENT_ID..."
+          clasp deploy --deploymentId "$DEPLOYMENT_ID" --description "Auto-deploy from commit $COMMIT_SHA"
           
           echo "✅ Audit script deployed successfully!"
 
       - name: Deploy waitlist script
         if: ${{ vars.APPS_SCRIPT_WAITLIST_ID != '' && vars.APPS_SCRIPT_WAITLIST_DEPLOYMENT_ID != '' }}
+        env:
+          SCRIPT_ID: ${{ vars.APPS_SCRIPT_WAITLIST_ID }}
+          DEPLOYMENT_ID: ${{ vars.APPS_SCRIPT_WAITLIST_DEPLOYMENT_ID }}
+          COMMIT_SHA: ${{ github.sha }}
         run: |
           cd apps-script/waitlist
           
           # Create .clasp.json with the script ID
           cat > .clasp.json << EOF
           {
-            "scriptId": "${{ vars.APPS_SCRIPT_WAITLIST_ID }}",
+            "scriptId": "$SCRIPT_ID",
             "rootDir": "."
           }
           EOF
@@ -89,25 +99,25 @@ jobs:
           echo "📤 Pushing code to Apps Script..."
           clasp push --force
           
-          echo "📦 Creating new version..."
-          VERSION=$(clasp version "Deploy from GitHub Actions - commit ${{ github.sha }}" | grep -oP '\d+$')
-          echo "Created version: $VERSION"
-          
-          echo "🚀 Deploying version $VERSION to deployment ${{ vars.APPS_SCRIPT_WAITLIST_DEPLOYMENT_ID }}..."
-          clasp deploy --deploymentId "${{ vars.APPS_SCRIPT_WAITLIST_DEPLOYMENT_ID }}" --versionNumber "$VERSION" --description "Auto-deploy from commit ${{ github.sha }}"
+          echo "🚀 Deploying to deployment $DEPLOYMENT_ID..."
+          clasp deploy --deploymentId "$DEPLOYMENT_ID" --description "Auto-deploy from commit $COMMIT_SHA"
           
           echo "✅ Waitlist script deployed successfully!"
 
       - name: Summary
+        env:
+          AUDIT_DEPLOYMENT_ID: ${{ vars.APPS_SCRIPT_AUDIT_DEPLOYMENT_ID }}
+          WAITLIST_DEPLOYMENT_ID: ${{ vars.APPS_SCRIPT_WAITLIST_DEPLOYMENT_ID }}
+          COMMIT_SHA: ${{ github.sha }}
         run: |
           echo "## 🎉 Deployment Complete" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** \`$COMMIT_SHA\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "✅ Scripts have been deployed to Google Apps Script" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "The web app URLs remain unchanged:" >> $GITHUB_STEP_SUMMARY
-          echo "- Audit: \`https://script.google.com/macros/s/${{ vars.APPS_SCRIPT_AUDIT_ID }}/exec\`" >> $GITHUB_STEP_SUMMARY
-          if [ -n "${{ vars.APPS_SCRIPT_WAITLIST_ID }}" ]; then
-            echo "- Waitlist: \`https://script.google.com/macros/s/${{ vars.APPS_SCRIPT_WAITLIST_ID }}/exec\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Audit: \`https://script.google.com/macros/s/$AUDIT_DEPLOYMENT_ID/exec\`" >> $GITHUB_STEP_SUMMARY
+          if [ -n "$WAITLIST_DEPLOYMENT_ID" ]; then
+            echo "- Waitlist: \`https://script.google.com/macros/s/$WAITLIST_DEPLOYMENT_ID/exec\`" >> $GITHUB_STEP_SUMMARY
           fi
