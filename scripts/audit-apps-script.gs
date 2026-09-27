@@ -1,7 +1,7 @@
 /**
  * Script Google Apps Script pour l'audit de réservabilité Loqal avec Gemini AI
  * 
- * Utilise l'API Gemini avec l'outil de recherche Google (grounding) pour analyser
+ * Utilise l'API Gemini avec l'outil de recherche Google pour analyser
  * la réservabilité d'une activité professionnelle.
  * 
  * Configuration requise :
@@ -14,7 +14,8 @@
  */
 
 // Configuration
-const GEMINI_MODEL = 'gemini-1.5-flash-latest'; // ou gemini-1.5-pro-latest pour plus de précision
+// Modèle : voir https://ai.google.dev/gemini-api/docs/models
+const GEMINI_MODEL = 'gemini-3.8-flash';
 const MAX_AUDITS_PER_HOUR = 20; // Limite anti-abus
 const CACHE_DURATION_HOURS = 24; // Cache des résultats
 
@@ -182,8 +183,8 @@ Réponds UNIQUEMENT avec ce JSON strict (aucun texte avant ou après) :
   ]
 }`;
 
-  // Appel API Gemini avec grounding
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
+  // Appel API Gemini avec google_search
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
   
   const payload = {
     contents: [{
@@ -192,12 +193,7 @@ Réponds UNIQUEMENT avec ce JSON strict (aucun texte avant ou après) :
       }]
     }],
     tools: [{
-      googleSearchRetrieval: {
-        dynamicRetrievalConfig: {
-          mode: "MODE_DYNAMIC",
-          dynamicThreshold: 0.3
-        }
-      }
+      google_search: {}
     }],
     generationConfig: {
       temperature: 0.2,
@@ -210,6 +206,9 @@ Réponds UNIQUEMENT avec ce JSON strict (aucun texte avant ou après) :
     const response = UrlFetchApp.fetch(apiUrl, {
       method: 'post',
       contentType: 'application/json',
+      headers: {
+        'x-goog-api-key': apiKey
+      },
       payload: JSON.stringify(payload),
       muteHttpExceptions: true
     });

@@ -310,19 +310,29 @@ const { waitlist } = siteData;
       const data = e.detail.prefillData;
       const form = document.getElementById('form-pro') as HTMLFormElement;
       
-      if (form && data.activityName) {
-        const nameInput = form.querySelector('input[name="name"]') as HTMLInputElement;
-        const activityInput = form.querySelector('input[name="activityName"]') as HTMLInputElement;
-        const cityInput = form.querySelector('input[name="city"]') as HTMLInputElement;
+      if (form) {
+        // Pre-fill activity name
+        if (data.activityName) {
+          const activityInput = form.querySelector('input[name="activityName"]') as HTMLInputElement;
+          if (activityInput) {
+            activityInput.value = data.activityName;
+          }
+        }
         
-        if (nameInput && data.activityName) {
-          nameInput.value = data.activityName;
+        // Pre-fill city
+        if (data.city) {
+          const cityInput = form.querySelector('input[name="city"]') as HTMLInputElement;
+          if (cityInput) {
+            cityInput.value = data.city;
+          }
         }
-        if (activityInput && data.activityName) {
-          activityInput.value = data.activityName;
-        }
-        if (cityInput && data.city) {
-          cityInput.value = data.city;
+        
+        // Pre-fill URL if field exists and URL is provided
+        if (data.url) {
+          const urlInput = form.querySelector('input[name="website"]') as HTMLInputElement;
+          if (urlInput) {
+            urlInput.value = data.url;
+          }
         }
       }
     }

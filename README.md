@@ -210,15 +210,14 @@ L'API Gemini avec recherche Google (grounding) analyse 4 critères pour un score
 - Limite de 20 audits par heure pour éviter les abus
 - Les résultats sont enregistrés automatiquement dans la feuille Google
 
-### Coûts
+### Coûts et limites
 
-L'API Gemini offre un quota gratuit généreux :
-- **Gemini 1.5 Flash** : 15 requêtes/minute, 1500 requêtes/jour (gratuit)
-- **Gemini 1.5 Pro** : 2 requêtes/minute, 50 requêtes/jour (gratuit)
+L'API Gemini propose un quota gratuit pour les développements et tests. Au-delà de ce quota, la **recherche Google est facturée par requête de recherche** effectuée par le modèle.
 
-Le script utilise par défaut `gemini-1.5-flash-latest` qui est rapide et suffisant pour cette tâche. Vous pouvez modifier la constante `GEMINI_MODEL` dans le script si nécessaire.
+**Consultez les tarifs actuels et les limites gratuites :**
+- Documentation officielle des prix : [https://ai.google.dev/gemini-api/docs/pricing](https://ai.google.dev/gemini-api/docs/pricing)
 
-Consultez les limites actuelles : [https://ai.google.dev/pricing](https://ai.google.dev/pricing)
+Le script utilise par défaut **Gemini 3.8 Flash** qui offre un bon équilibre entre rapidité et qualité d'analyse. Vous pouvez modifier la constante `GEMINI_MODEL` dans le script si nécessaire (voir la liste des modèles disponibles : [https://ai.google.dev/gemini-api/docs/models](https://ai.google.dev/gemini-api/docs/models)).
 
 ### Test
 
