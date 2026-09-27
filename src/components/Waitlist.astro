@@ -271,8 +271,8 @@ const { waitlist } = siteData;
 </section>
 
 <script>
-  // Get endpoint from env or use placeholder
-  const WAITLIST_ENDPOINT = import.meta.env.PUBLIC_WAITLIST_ENDPOINT || '';
+  // Get endpoint from env - use PUBLIC_WAITLIST_ENDPOINT if set, otherwise fall back to PUBLIC_AUDIT_ENDPOINT
+  const WAITLIST_ENDPOINT = import.meta.env.PUBLIC_WAITLIST_ENDPOINT || import.meta.env.PUBLIC_AUDIT_ENDPOINT || '';
 
   // Tab switching
   const tabVisitor = document.getElementById('tab-visitor');
@@ -361,7 +361,7 @@ const { waitlist } = siteData;
 
     // Collect form data
     const formData = new FormData(form);
-    const data: Record<string, any> = {};
+    const data: Record<string, any> = { action: 'waitlist' };
     
     formData.forEach((value, key) => {
       if (key === 'interests') {
@@ -372,8 +372,8 @@ const { waitlist } = siteData;
       }
     });
 
-    // Format interests as comma-separated string
-    if (data.interests) {
+    // Convert interests array to comma-separated string
+    if (data.interests && Array.isArray(data.interests)) {
       data.interests = data.interests.join(', ');
     }
 
@@ -385,20 +385,36 @@ const { waitlist } = siteData;
       const response = await fetch(WAITLIST_ENDPOINT, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: JSON.stringify(data),
+        body: new URLSearchParams(data),
       });
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
 
-      // Success
-      messageEl.textContent = 'Merci ! Vous recevrez un email dès que Loqal sera disponible.';
-      messageEl.className = 'p-4 rounded text-sm bg-olive/10 text-olive border border-olive/20';
-      messageEl.classList.remove('hidden');
-      form.reset();
+      const text = await response.text();
+      let result;
+      
+      try {
+        result = JSON.parse(text);
+      } catch (parseError) {
+        console.error('Parse error:', parseError, 'Response:', text);
+        throw new Error('Invalid response format');
+      }
+
+      if (result.ok) {
+
+      if (result.ok) {
+        // Success
+        messageEl.textContent = 'Merci ! Vous recevrez un email dès que Loqal sera disponible.';
+        messageEl.className = 'p-4 rounded text-sm bg-olive/10 text-olive border border-olive/20';
+        messageEl.classList.remove('hidden');
+        form.reset();
+      } else {
+        throw new Error(result.error || 'Unknown error');
+      }
     } catch (error) {
       // Error
       messageEl.textContent = 'Une erreur est survenue. Veuillez réessayer ou nous contacter directement.';
