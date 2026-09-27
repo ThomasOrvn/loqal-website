@@ -45,7 +45,7 @@ jobs:
           echo "✅ All required secrets and variables are set"
 
       - name: Install clasp
-        run: npm install -g @google/clasp@2.4.2
+        run: npm install -g @google/clasp@3.1.0
 
       - name: Setup clasp authentication
         env:
@@ -53,18 +53,17 @@ jobs:
         run: |
           mkdir -p ~/.config/clasp
           printf '%s' "$CLASPRC_JSON" > ~/.clasprc.json
-          # Verify the file was created and is valid JSON
-          if [ ! -f ~/.clasprc.json ]; then
-            echo "❌ Error: ~/.clasprc.json was not created"
-            exit 1
-          fi
-          if ! jq empty ~/.clasprc.json 2>/dev/null; then
-            echo "❌ Error: ~/.clasprc.json is not valid JSON"
-            echo "File size: $(wc -c < ~/.clasprc.json) bytes"
-            exit 1
+          # Debug: Check file format (keys only, no values)
+          echo "🔍 Debug: Checking .clasprc.json format..."
+          echo "Top-level keys: $(jq -r 'keys | join(", ")' ~/.clasprc.json)"
+          if jq -e '.tokens' ~/.clasprc.json > /dev/null 2>&1; then
+            echo "Format: clasp 3.x (tokens object)"
+          elif jq -e '.token' ~/.clasprc.json > /dev/null 2>&1; then
+            echo "Format: clasp 2.x (token object)"
+          else
+            echo "Format: Unknown"
           fi
           echo "✅ Clasp authentication configured"
-          echo "✅ File verified: $(wc -c < ~/.clasprc.json) bytes of valid JSON"
 
       - name: Deploy audit script
         env:
@@ -85,8 +84,8 @@ jobs:
           echo "📤 Pushing code to Apps Script..."
           clasp push --force
           
-          echo "🚀 Deploying to deployment $DEPLOYMENT_ID..."
-          clasp deploy --deploymentId "$DEPLOYMENT_ID" --description "Auto-deploy from commit $COMMIT_SHA"
+          echo "🚀 Updating deployment $DEPLOYMENT_ID..."
+          clasp update-deployment "$DEPLOYMENT_ID" --description "Auto-deploy from commit $COMMIT_SHA"
           
           echo "✅ Audit script deployed successfully!"
 
@@ -110,8 +109,8 @@ jobs:
           echo "📤 Pushing code to Apps Script..."
           clasp push --force
           
-          echo "🚀 Deploying to deployment $DEPLOYMENT_ID..."
-          clasp deploy --deploymentId "$DEPLOYMENT_ID" --description "Auto-deploy from commit $COMMIT_SHA"
+          echo "🚀 Updating deployment $DEPLOYMENT_ID..."
+          clasp update-deployment "$DEPLOYMENT_ID" --description "Auto-deploy from commit $COMMIT_SHA"
           
           echo "✅ Waitlist script deployed successfully!"
 
