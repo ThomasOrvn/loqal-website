@@ -6,50 +6,27 @@ const { pros } = siteData;
 
 <section id="professionnels" class="section-padding section-border">
   <div class="container-custom">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-      <!-- Visual - Product screenshots placeholder -->
-      <div>
-        <div class="relative">
-          <div class="aspect-[4/3] bg-warmgrey/10 rounded-lg overflow-hidden">
-            <img
-              src="/chateau.jpg"
-              alt="Interface professionnelle Loqal"
-              class="w-full h-full object-cover"
-            />
-          </div>
-          <!-- Placeholder note -->
-          <div
-            class="mt-4 p-3 bg-olive/5 border border-olive/20 rounded text-sm text-warmgrey"
-          >
-            <p class="font-medium text-ink mb-1">📸 Captures d'écran à venir</p>
-            <p class="text-xs">
-              Les captures du tableau de bord professionnel seront ajoutées ici
-              (agenda, réservations, calendrier).
-            </p>
-          </div>
-        </div>
-      </div>
-
+    <div class="max-w-4xl mx-auto">
       <!-- Content -->
-      <div>
+      <div class="text-center mb-12">
         <p class="small-caps text-warmgrey mb-4">{pros.eyebrow}</p>
         <h2 class="text-h2 font-serif mb-6">{pros.title}</h2>
-        <p class="text-lg text-warmgrey mb-8 leading-relaxed">
+        <p class="text-lg text-warmgrey leading-relaxed">
           {pros.description}
         </p>
+      </div>
 
-        <div class="space-y-6">
-          {
-            pros.benefits.map((benefit) => (
-              <div class="card border-l-4 border-l-olive">
-                <h4 class="font-sans font-semibold text-base mb-2">
-                  {benefit.title}
-                </h4>
-                <p class="text-warmgrey text-sm">{benefit.description}</p>
-              </div>
-            ))
-          }
-        </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+        {
+          pros.benefits.map((benefit) => (
+            <div class="card border-t-4 border-t-olive text-center">
+              <h4 class="font-sans font-semibold text-lg mb-3">
+                {benefit.title}
+              </h4>
+              <p class="text-warmgrey text-sm leading-relaxed">{benefit.description}</p>
+            </div>
+          ))
+        }
       </div>
     </div>
   </div>

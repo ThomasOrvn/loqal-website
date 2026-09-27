@@ -53,11 +53,10 @@ Les images sont dans le dossier `public/` :
 - `public/logo.png` : logo Loqal (version sombre)
 - `public/favicon.ico` : favicon du site
 - `public/og-image.jpg` : image de partage sur les réseaux sociaux (à générer)
-- `public/vineyard.jpg`, `public/chateau.jpg` : photos placeholder
+- `public/images/univers/` : photos des différents univers du terroir
+- `public/images/thomas-orvain.webp` : photo du fondateur
 
-**Pour remplacer les placeholders d'images :**
-1. Ajoutez vos photos dans `public/`
-2. Modifiez les chemins dans les composants (`src/components/*.astro`)
+**Toutes les photos des univers proviennent d'Unsplash** et sont sous licence libre. Consultez le fichier `CREDITS.md` pour les détails complets (auteurs, sources, licences).
 
 ## 🎨 Générer l'image OG (Open Graph)
 
@@ -260,6 +259,18 @@ Le design system Loqal est configuré dans `tailwind.config.mjs` et `src/styles/
 Créez un fichier `.astro` dans `src/pages/`. Astro génère automatiquement les routes :
 - `src/pages/about.astro` → `/about`
 - `src/pages/blog/post.astro` → `/blog/post`
+
+## 📷 Crédits photos
+
+Toutes les photos utilisées sur le site proviennent d'Unsplash et sont sous licence libre. Les détails complets (auteurs, titres, sources et licences) sont disponibles dans le fichier `CREDITS.md` à la racine du projet.
+
+Photos des univers :
+- **Vin & Vignobles** : Hermes Rivera
+- **Artisanat** : Lenny Kuhne
+- **Pêche** : Jonny Gios
+- **Chasse** : Lukasz Szmigiel
+- **Gastronomie** : Toa Heftiba
+- **Savoir-faire** : Quino Al
 
 ## 📧 Support
 

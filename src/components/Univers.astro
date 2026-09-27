@@ -3,14 +3,32 @@ import siteData from '../content/site.json';
 
 const { univers } = siteData;
 
-// Define placeholder images for each universe
-const placeholders = [
-  '/vineyard.jpg', // Vin (we have a real vineyard image)
-  'https://placehold.co/600x400/4C7061/F0EFEA?text=Artisanat',
-  'https://placehold.co/600x400/4C7061/F0EFEA?text=Pêche',
-  'https://placehold.co/600x400/4C7061/F0EFEA?text=Chasse',
-  'https://placehold.co/600x400/4C7061/F0EFEA?text=Gastronomie',
-  'https://placehold.co/600x400/4C7061/F0EFEA?text=Savoir-faire',
+// Real images for each universe
+const images = [
+  {
+    src: '/images/univers/vignobles.webp',
+    alt: 'Vignoble français sous le soleil'
+  },
+  {
+    src: '/images/univers/artisanat.webp',
+    alt: 'Artisan au travail dans son atelier'
+  },
+  {
+    src: '/images/univers/peche.webp',
+    alt: 'Pêcheur en rivière française'
+  },
+  {
+    src: '/images/univers/chasse.webp',
+    alt: 'Forêt française en saison de chasse'
+  },
+  {
+    src: '/images/univers/gastronomie.webp',
+    alt: 'Marché de producteurs locaux avec produits frais'
+  },
+  {
+    src: '/images/univers/savoir-faire.webp',
+    alt: 'Artisan pratiquant un savoir-faire traditionnel'
+  },
 ];
 ---
 
@@ -27,8 +45,9 @@ const placeholders = [
           <div class="card hover:shadow-lg transition-shadow group">
             <div class="aspect-[4/3] bg-warmgrey/10 rounded mb-4 overflow-hidden">
               <img
-                src={placeholders[index]}
-                alt={item.title}
+                src={images[index].src}
+                alt={images[index].alt}
+                loading="lazy"
                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
             </div>

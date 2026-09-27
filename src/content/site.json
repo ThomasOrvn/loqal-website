@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Loqal – Réservez vignerons, artisans et guides du terroir",
-    "description": "Découvrez et réservez des expériences authentiques auprès des vignerons, artisans et guides locaux. Pros : gérez agenda et réservations. Rejoignez la liste d'attente.",
+    "description": "Découvrez et réservez des expériences authentiques auprès des vignerons, artisans et guides locaux. Vignerons, artisans, guides : gérez agenda et réservations. Rejoignez la liste d'attente.",
     "url": "https://loqal.fr",
     "emails": {
       "contact": "contact@loqal.fr",
@@ -10,10 +10,9 @@
   },
   "hero": {
     "title": "Le terroir, de l'intérieur.",
-    "subtitle": "Visites de cave, ateliers d'artisans, sorties avec un guide de pêche… Découvrez et réservez les expériences de ceux qui font vivre nos régions.",
+    "subtitle": "Chais de vignerons, ateliers d'artisans, rivières au petit matin, forêts en saison, étals de producteurs… Découvrez et réservez des rencontres authentiques avec celles et ceux qui façonnent, de leurs mains, le terroir français.",
     "cta": {
-      "visitor": "Rejoindre la liste d'attente",
-      "pro": "Je suis professionnel"
+      "visitor": "Rejoindre la liste d'attente"
     }
   },
   "univers": {
@@ -67,20 +66,20 @@
   },
   "pros": {
     "eyebrow": "Pour les professionnels",
-    "title": "Gérez votre activité, accueillez l'essentiel",
-    "description": "Vigneron, artisan, guide : Loqal gère votre agenda, vos activités et vos réservations, envoie les rappels automatiques et vous rend visible auprès de visiteurs passionnés, prêts à réserver. Vous vous concentrez sur l'accueil.",
+    "title": "Transmettez votre savoir-faire, on s'occupe du reste",
+    "description": "Vignerons, artisans, guides de pêche et de chasse, producteurs : vous formez le tissu artisanal de la France, ces passionnés qui façonnent et font vivre nos terroirs. Vous avez envie de faire découvrir votre savoir-faire au grand public, sans y laisser vos soirées en administratif. Loqal gère pour vous l'agenda, les réservations, les rappels et votre vitrine en ligne. Vous vous consacrez à votre métier et à l'accueil.",
     "benefits": [
       {
         "title": "Agenda et réservations au même endroit",
-        "description": "Créez vos créneaux, gérez vos disponibilités, acceptez les réservations en un clin d'œil"
+        "description": "Créez vos créneaux, gérez vos disponibilités et acceptez les réservations en un clin d'œil."
       },
       {
-        "title": "Rappels automatiques",
-        "description": "Réduisez les no-show : les visiteurs reçoivent des rappels avant leur venue"
+        "title": "Zéro paperasse",
+        "description": "Confirmations et rappels partent automatiquement : moins d'appels, moins d'absences, plus de temps pour votre métier."
       },
       {
-        "title": "Visibilité auprès de visiteurs qualifiés",
-        "description": "Apparaissez dans les recherches des passionnés de terroir prêts à réserver"
+        "title": "Votre vitrine clé en main",
+        "description": "Une page soignée pour présenter votre savoir-faire, vos activités et vos tarifs, sans créer ni entretenir de site web."
       }
     ]
   },
