@@ -1,0 +1,113 @@
+name: Deploy Apps Script
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps-script/**'
+      - '.github/workflows/deploy-apps-script.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Check required secrets and variables
+        run: |
+          if [ -z "${{ secrets.CLASPRC_JSON }}" ]; then
+            echo "❌ Error: Secret CLASPRC_JSON is not set"
+            echo "Please add your ~/.clasprc.json content as a repository secret"
+            exit 1
+          fi
+          if [ -z "${{ vars.APPS_SCRIPT_AUDIT_ID }}" ]; then
+            echo "❌ Error: Variable APPS_SCRIPT_AUDIT_ID is not set"
+            echo "Please add your audit script ID as a repository variable"
+            exit 1
+          fi
+          if [ -z "${{ vars.APPS_SCRIPT_AUDIT_DEPLOYMENT_ID }}" ]; then
+            echo "❌ Error: Variable APPS_SCRIPT_AUDIT_DEPLOYMENT_ID is not set"
+            echo "Please add your audit deployment ID as a repository variable"
+            exit 1
+          fi
+          echo "✅ All required secrets and variables are set"
+
+      - name: Install clasp
+        run: npm install -g @google/clasp@2.4.2
+
+      - name: Setup clasp authentication
+        run: |
+          mkdir -p ~/.config/clasp
+          echo '${{ secrets.CLASPRC_JSON }}' > ~/.clasprc.json
+          echo "✅ Clasp authentication configured"
+
+      - name: Deploy audit script
+        run: |
+          cd apps-script/audit
+          
+          # Create .clasp.json with the script ID
+          cat > .clasp.json << EOF
+          {
+            "scriptId": "${{ vars.APPS_SCRIPT_AUDIT_ID }}",
+            "rootDir": "."
+          }
+          EOF
+          
+          echo "📤 Pushing code to Apps Script..."
+          clasp push --force
+          
+          echo "📦 Creating new version..."
+          VERSION=$(clasp version "Deploy from GitHub Actions - commit ${{ github.sha }}" | grep -oP '\d+$')
+          echo "Created version: $VERSION"
+          
+          echo "🚀 Deploying version $VERSION to deployment ${{ vars.APPS_SCRIPT_AUDIT_DEPLOYMENT_ID }}..."
+          clasp deploy --deploymentId "${{ vars.APPS_SCRIPT_AUDIT_DEPLOYMENT_ID }}" --versionNumber "$VERSION" --description "Auto-deploy from commit ${{ github.sha }}"
+          
+          echo "✅ Audit script deployed successfully!"
+
+      - name: Deploy waitlist script
+        if: ${{ vars.APPS_SCRIPT_WAITLIST_ID != '' && vars.APPS_SCRIPT_WAITLIST_DEPLOYMENT_ID != '' }}
+        run: |
+          cd apps-script/waitlist
+          
+          # Create .clasp.json with the script ID
+          cat > .clasp.json << EOF
+          {
+            "scriptId": "${{ vars.APPS_SCRIPT_WAITLIST_ID }}",
+            "rootDir": "."
+          }
+          EOF
+          
+          echo "📤 Pushing code to Apps Script..."
+          clasp push --force
+          
+          echo "📦 Creating new version..."
+          VERSION=$(clasp version "Deploy from GitHub Actions - commit ${{ github.sha }}" | grep -oP '\d+$')
+          echo "Created version: $VERSION"
+          
+          echo "🚀 Deploying version $VERSION to deployment ${{ vars.APPS_SCRIPT_WAITLIST_DEPLOYMENT_ID }}..."
+          clasp deploy --deploymentId "${{ vars.APPS_SCRIPT_WAITLIST_DEPLOYMENT_ID }}" --versionNumber "$VERSION" --description "Auto-deploy from commit ${{ github.sha }}"
+          
+          echo "✅ Waitlist script deployed successfully!"
+
+      - name: Summary
+        run: |
+          echo "## 🎉 Deployment Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Scripts have been deployed to Google Apps Script" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The web app URLs remain unchanged:" >> $GITHUB_STEP_SUMMARY
+          echo "- Audit: \`https://script.google.com/macros/s/${{ vars.APPS_SCRIPT_AUDIT_ID }}/exec\`" >> $GITHUB_STEP_SUMMARY
+          if [ -n "${{ vars.APPS_SCRIPT_WAITLIST_ID }}" ]; then
+            echo "- Waitlist: \`https://script.google.com/macros/s/${{ vars.APPS_SCRIPT_WAITLIST_ID }}/exec\`" >> $GITHUB_STEP_SUMMARY
+          fi

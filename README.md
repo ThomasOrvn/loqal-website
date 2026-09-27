@@ -241,6 +241,136 @@ Si l'audit retourne une erreur :
 - Vérifiez que `GEMINI_API_KEY` est bien configurée dans les propriétés
 - Vérifiez que le modèle `gemini-3.8-flash` est accessible
 
+## 🤖 Déploiement automatique des scripts Apps Script
+
+Les scripts Apps Script sont automatiquement déployés depuis GitHub avec [clasp](https://github.com/google/clasp) (Command Line Apps Script Projects).
+
+### Prérequis : Configuration initiale (une seule fois)
+
+#### 1. Activer l'API Google Apps Script
+
+1. Allez sur https://script.google.com/home/usersettings
+2. Activez **Google Apps Script API** (basculer le switch)
+
+#### 2. Authentifier clasp localement
+
+Sur votre machine locale, exécutez :
+
+```bash
+npx @google/clasp login
+```
+
+- Sélectionnez votre compte Google (`thomas@loqal.fr`)
+- Autorisez l'accès
+- Un fichier `~/.clasprc.json` est créé dans votre dossier utilisateur
+
+#### 3. Récupérer le contenu de `~/.clasprc.json`
+
+**Sur macOS/Linux** :
+```bash
+cat ~/.clasprc.json
+```
+
+**Sur Windows** :
+```powershell
+type %USERPROFILE%\.clasprc.json
+```
+
+Copiez **tout le contenu** du fichier (c'est un JSON avec vos tokens OAuth).
+
+#### 4. Ajouter le secret GitHub `CLASPRC_JSON`
+
+1. Allez sur https://github.com/ThomasOrvn/loqal-website/settings/secrets/actions
+2. Cliquez sur **New repository secret**
+3. Name : `CLASPRC_JSON`
+4. Value : Collez le contenu complet de `~/.clasprc.json`
+5. Cliquez sur **Add secret**
+
+⚠️ **Important** : Ne partagez jamais ce fichier publiquement, il contient vos tokens d'authentification.
+
+#### 5. Récupérer les identifiants des scripts
+
+Pour **chaque script** (audit et waitlist) :
+
+**A. Script ID** :
+1. Ouvrez le script dans Apps Script
+2. Cliquez sur **Projet** (icône ⚙️) dans la barre latérale
+3. Copiez l'**ID du script** (format : `AKfycbz...`)
+
+**B. Deployment ID** :
+1. Dans le script Apps Script, cliquez sur **Déployer > Gérer les déploiements**
+2. À droite de votre déploiement "Application Web", cliquez sur l'icône ⓘ (informations)
+3. Copiez l'**ID de déploiement** (format : `AKfycby...`)
+
+#### 6. Ajouter les variables GitHub
+
+1. Allez sur https://github.com/ThomasOrvn/loqal-website/settings/variables/actions
+2. Cliquez sur **New repository variable** pour chaque variable :
+
+**Pour le script d'audit (obligatoire)** :
+- Name : `APPS_SCRIPT_AUDIT_ID`
+- Value : Le Script ID de votre script d'audit
+
+- Name : `APPS_SCRIPT_AUDIT_DEPLOYMENT_ID`
+- Value : Le Deployment ID de votre script d'audit
+
+**Pour le script de liste d'attente (optionnel)** :
+- Name : `APPS_SCRIPT_WAITLIST_ID`
+- Value : Le Script ID de votre script waitlist
+
+- Name : `APPS_SCRIPT_WAITLIST_DEPLOYMENT_ID`
+- Value : Le Deployment ID de votre script waitlist
+
+### Utilisation : Déploiement automatique
+
+Une fois la configuration initiale terminée, le déploiement est **entièrement automatique** :
+
+1. **Modifier le code** : Éditez les fichiers dans `apps-script/audit/Code.gs` ou `apps-script/waitlist/Code.gs`
+2. **Commit et push** : `git commit -am "Message" && git push`
+3. **GitHub Actions déploie** : Le workflow se déclenche automatiquement
+4. **Nouvelle version créée** : Une nouvelle version est créée et déployée
+5. **L'URL reste identique** : `https://script.google.com/macros/s/.../exec`
+
+**Vous ne devez plus jamais** :
+- ❌ Copier-coller le code dans Apps Script
+- ❌ Cliquer sur "Déployer > Gérer les déploiements"
+- ❌ Créer des versions manuellement
+
+### Déclencher manuellement un déploiement
+
+Vous pouvez aussi déclencher un déploiement sans modifier le code :
+
+1. Allez sur https://github.com/ThomasOrvn/loqal-website/actions/workflows/deploy-apps-script.yml
+2. Cliquez sur **Run workflow**
+3. Sélectionnez la branche `main`
+4. Cliquez sur **Run workflow**
+
+### Vérifier le déploiement
+
+Après un push, le workflow s'exécute automatiquement :
+
+1. Allez sur https://github.com/ThomasOrvn/loqal-website/actions
+2. Cliquez sur le workflow **Deploy Apps Script**
+3. Suivez la progression en temps réel
+
+En cas d'erreur :
+- Le workflow affiche un message clair (secret manquant, erreur clasp, etc.)
+- Les logs détaillés sont disponibles dans chaque étape
+
+### Structure des dossiers
+
+```
+apps-script/
+├── audit/
+│   ├── Code.gs           # Script d'audit (ancien scripts/audit-apps-script.gs)
+│   └── appsscript.json   # Configuration du projet Apps Script
+└── waitlist/
+    ├── Code.gs           # Script waitlist (ancien scripts/waitlist-apps-script.gs)
+    └── appsscript.json   # Configuration du projet Apps Script
+```
+
+**Note** : La propriété `GEMINI_API_KEY` reste dans Apps Script (Projet > Propriétés du script) et n'est **pas touchée** par clasp. Elle n'est jamais versionnée ni déployée depuis GitHub.
+
 ### Coûts et limites
 
 L'API Gemini propose un quota gratuit pour les développements et tests. Au-delà de ce quota, la **recherche Google est facturée par requête de recherche** effectuée par le modèle.
