@@ -115,7 +115,11 @@ function handleWaitlist(params) {
 
     // Send confirmation email (non-blocking)
     try {
-      const firstName = params.firstName || params.name || '';
+      // For visitors: use firstName or name
+      // For pros: only use firstName (params.firstName), not name (often domain name)
+      const firstName = type === 'visiteur' 
+        ? (params.firstName || params.name || '')
+        : (params.firstName || '');
       sendWaitlistConfirmationEmail(email, type, firstName);
     } catch (emailError) {
       console.error('Failed to send confirmation email:', emailError);
@@ -150,14 +154,19 @@ function sendWaitlistConfirmationEmail(email, type, firstName) {
 
     // Prepare email content based on type
     const isVisitor = type === 'visiteur';
-    const greeting = firstName ? `${firstName},` : 'Bonjour,';
+    
+    // For pros, only use firstName if it's from params.firstName (not params.name which might be domain name)
+    // For visitors, use firstName if provided
+    const useFirstName = firstName && firstName.trim() !== '';
+    const greeting = useFirstName ? `Bonjour ${firstName},` : 'Bonjour,';
+    const greetingHtml = useFirstName ? `Bonjour ${escapeHtml(firstName)},` : 'Bonjour,';
     
     const subject = isVisitor 
       ? 'Bienvenue sur Loqal'
       : 'Votre inscription à Loqal';
 
     // HTML version
-    const htmlBody = createEmailHtml(greeting, isVisitor);
+    const htmlBody = createEmailHtml(greetingHtml, isVisitor);
     
     // Plain text version
     const textBody = createEmailText(greeting, isVisitor);
@@ -180,6 +189,20 @@ function sendWaitlistConfirmationEmail(email, type, firstName) {
     console.error('Error sending confirmation email:', error);
     throw error;
   }
+}
+
+/**
+ * Escape HTML special characters
+ */
+function escapeHtml(text) {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  };
+  return text.replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
 /**
