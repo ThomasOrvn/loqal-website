@@ -1,7 +1,13 @@
 ---
 import siteData from '../content/site.json';
 
-const { founder, meta } = siteData;
+interface Props {
+  locale?: 'fr' | 'en';
+}
+
+const { locale = 'fr' } = Astro.props;
+const { founder } = siteData[locale];
+const { meta } = siteData;
 ---
 
 <section id="fondateur" class="section-padding section-border">
@@ -19,7 +25,7 @@ const { founder, meta } = siteData;
           >
             <img
               src="/images/thomas-orvain.webp"
-              alt="Thomas Orvain, fondateur de Loqal"
+              alt={locale === 'en' ? 'Thomas Orvain, founder of Loqal' : 'Thomas Orvain, fondateur de Loqal'}
               width="800"
               height="800"
               class="w-full h-full object-cover"

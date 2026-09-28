@@ -1,7 +1,12 @@
 ---
 import siteData from '../content/site.json';
 
-const { visitors } = siteData;
+interface Props {
+  locale?: 'fr' | 'en';
+}
+
+const { locale = 'fr' } = Astro.props;
+const { visitors } = siteData[locale];
 ---
 
 <section id="visiteurs" class="section-padding section-border">

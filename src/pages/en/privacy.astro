@@ -1,0 +1,111 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const locale = 'en';
+---
+
+<Layout
+  title="Privacy Policy - Loqal"
+  description="Loqal privacy policy and personal data protection"
+  locale={locale}
+>
+  <Header locale={locale} />
+  <main class="min-h-screen">
+    <div class="container-custom py-21">
+      <div class="max-w-3xl mx-auto">
+        <h1 class="text-h2 font-serif mb-8">Privacy Policy</h1>
+
+        <p class="text-lg text-warmgrey mb-8">
+          Loqal is committed to protecting your personal data in accordance with the General Data Protection Regulation (GDPR).
+        </p>
+
+        <section class="mb-8">
+          <h2 class="text-2xl font-serif mb-4">Data Controller</h2>
+          <p class="text-warmgrey">
+            Thomas Orvain / Loqal<br />
+            Contact: <a href="mailto:thomas@loqal.fr" class="text-olive hover:underline">thomas@loqal.fr</a>
+          </p>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-2xl font-serif mb-4">Data Collected</h2>
+          <p class="text-warmgrey mb-3">
+            <strong>Visitor waitlist:</strong> name, email, regions of interest (optional), interests.
+          </p>
+          <p class="text-warmgrey mb-3">
+            <strong>Professional waitlist:</strong> name, email, town, estate name, professional category, phone (optional).
+          </p>
+          <p class="text-warmgrey">
+            <strong>Free audit:</strong> estate name, town, website (optional).
+          </p>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-2xl font-serif mb-4">Purposes</h2>
+          <p class="text-warmgrey mb-2">
+            <strong>Waitlist:</strong> to inform you of Loqal's launch.
+          </p>
+          <p class="text-warmgrey">
+            <strong>Audit:</strong> to perform the bookability and online visibility analysis of your estate.
+          </p>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-2xl font-serif mb-4">Legal Basis</h2>
+          <p class="text-warmgrey mb-2">
+            <strong>Waitlist:</strong> your explicit consent (GDPR Article 6.1.a).
+          </p>
+          <p class="text-warmgrey">
+            <strong>Audit:</strong> your request and our legitimate interest in providing the requested service (GDPR Article 6.1.b and 6.1.f).
+          </p>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-2xl font-serif mb-4">Sub-processors</h2>
+          <p class="text-warmgrey">
+            <strong>Google Workspace / Google Sheets:</strong> waitlist and audit data storage.<br />
+            <strong>Google Gemini:</strong> AI analysis for the bookability audit.<br />
+            <strong>GitHub Pages:</strong> website hosting.
+          </p>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-2xl font-serif mb-4">Retention Period</h2>
+          <p class="text-warmgrey">
+            Your data is kept until Loqal's launch, then for a maximum of 3 years without contact from you, or deleted immediately upon request.
+          </p>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-2xl font-serif mb-4">Cookies and Trackers</h2>
+          <p class="text-warmgrey">
+            This site does not use any advertising, tracking or analytics cookies. No third-party trackers are installed.
+          </p>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-2xl font-serif mb-4">No Resale</h2>
+          <p class="text-warmgrey">
+            Your data is never sold, rented or transferred to third parties for commercial purposes.
+          </p>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-2xl font-serif mb-4">Your Rights</h2>
+          <p class="text-warmgrey mb-3">
+            You have the right to access, rectify, delete and object to your personal data.
+          </p>
+          <p class="text-warmgrey mb-3">
+            To exercise these rights, contact us at <a href="mailto:thomas@loqal.fr" class="text-olive hover:underline">thomas@loqal.fr</a>.
+          </p>
+          <p class="text-warmgrey">
+            You also have the right to lodge a complaint with the CNIL (<a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer" class="text-olive hover:underline">www.cnil.fr</a>).
+          </p>
+        </section>
+      </div>
+    </div>
+  </main>
+  <Footer locale={locale} />
+</Layout>

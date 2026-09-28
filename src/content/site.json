@@ -1,199 +1,399 @@
 {
   "meta": {
-    "title": "Loqal – Réservez vos visites et dégustations chez les vignerons",
-    "description": "Découvrez et réservez vos visites de cave et dégustations dans les domaines viticoles. Vignerons : gérez votre agenda et vos réservations simplement. Rejoignez la liste d'attente.",
     "url": "https://loqal.fr",
     "emails": {
       "contact": "contact@loqal.fr",
       "thomas": "thomas@loqal.fr"
     }
   },
-  "hero": {
-    "title": "Le terroir, de l'intérieur.",
-    "subtitle": "Derrière chaque bouteille se cache un vigneron prêt à vous raconter son histoire. Loqal vous ouvre ses portes.",
-    "cta": {
-      "visitor": "Rejoindre la liste d'attente"
-    }
-  },
-  "univers": {
-    "eyebrow": "Découvrir",
-    "title": "Le vignoble, côté coulisses",
-    "subtitle": "Chaque domaine a sa façon de vous accueillir. En voici quelques-unes.",
-    "badges": [
-      "Visite de cave",
-      "Dégustation",
-      "Balade dans les vignes",
-      "Accord mets et vins",
-      "Vendanges",
-      "Atelier d'assemblage",
-      "Rencontre vigneronne"
-    ]
-  },
-  "visitors": {
-    "eyebrow": "Pour les visiteurs",
-    "title": "Trouvez et réservez en quelques clics",
-    "description": "En vacances ou près de chez vous, trouvez les domaines qui vous ouvrent leurs portes. Horaires, tarifs et créneaux sont à jour. Il ne vous reste qu'à choisir le domaine qui vous ressemble.",
-    "steps": [
-      {
-        "title": "Cherchez près de chez vous",
-        "description": "Découvrez les professionnels autour de vous, par région ou par centre d'intérêt"
-      },
-      {
-        "title": "Consultez les disponibilités",
-        "description": "Horaires, tarifs et créneaux disponibles en temps réel"
-      },
-      {
-        "title": "Réservez en ligne",
-        "description": "Confirmation immédiate, rappels automatiques, aucune mauvaise surprise"
-      }
-    ]
-  },
-  "pros": {
-    "eyebrow": "Pour les professionnels",
-    "title": "Transmettez votre savoir-faire, on s'occupe du reste",
-    "description": "Accueillir des visiteurs est un plaisir. Les organiser l'est beaucoup moins. Loqal prend en charge votre agenda, vos réservations et vos rappels, et vous gardez le meilleur : la rencontre.",
-    "benefits": [
-      {
-        "title": "Agenda et réservations au même endroit",
-        "description": "Créez vos créneaux, gérez vos disponibilités et acceptez les réservations en un clin d'œil."
-      },
-      {
-        "title": "Plus de temps pour la vigne",
-        "description": "Loqal s'occupe des confirmations et des rappels. Vous gardez vos journées pour ce qui compte."
-      },
-      {
-        "title": "Votre vitrine clé en main",
-        "description": "Une page soignée pour présenter votre savoir-faire, vos activités et vos tarifs, sans créer ni entretenir de site web."
-      }
-    ]
-  },
-  "audit": {
-    "badge": "Audit gratuit",
-    "title": "Vos visiteurs peuvent-ils réserver facilement ?",
-    "description": "Testez gratuitement la réservabilité de votre domaine en quelques secondes.",
-    "form": {
-      "activityName": "Nom de votre activité",
-      "city": "Ville",
-      "website": "Site web (optionnel)",
-      "submit": "Tester mon activité"
+  "fr": {
+    "meta": {
+      "title": "Loqal – Réservez vos visites et dégustations chez les vignerons",
+      "description": "Découvrez et réservez vos visites de cave et dégustations dans les domaines viticoles. Vignerons : gérez votre agenda et vos réservations simplement. Rejoignez la liste d'attente."
     },
-    "loading": {
-      "message": "Analyse en cours… Notre IA parcourt le web pour évaluer votre visibilité. Cela prend environ 30 secondes.",
-      "steps": [
-        "Recherche de votre fiche Google…",
-        "Vérification de la réservation en ligne…",
-        "Analyse de votre site mobile…",
-        "Évaluation de vos horaires affichés…"
+    "hero": {
+      "title": "Le terroir, de l'intérieur.",
+      "subtitle": "Derrière chaque bouteille se cache un vigneron prêt à vous raconter son histoire. Loqal vous ouvre ses portes.",
+      "cta": {
+        "visitor": "Rejoindre la liste d'attente"
+      }
+    },
+    "univers": {
+      "eyebrow": "Découvrir",
+      "title": "Le vignoble, côté coulisses",
+      "subtitle": "Chaque domaine a sa façon de vous accueillir. En voici quelques-unes.",
+      "badges": [
+        "Visite de cave",
+        "Dégustation",
+        "Balade dans les vignes",
+        "Accord mets et vins",
+        "Vendanges",
+        "Atelier d'assemblage",
+        "Rencontre vigneronne"
       ]
     },
-    "results": {
-      "badge": "Résultats de l'audit",
-      "title": "Détail de votre score",
-      "cta": "Rejoignez la liste d'attente pro",
-      "testAgain": "← Tester une autre activité",
-      "helpText": "Loqal vous aide à devenir réservable en quelques minutes : gérez votre agenda, vos réservations et votre vitrine en ligne, en toute simplicité."
+    "visitors": {
+      "eyebrow": "Pour les visiteurs",
+      "title": "Trouvez et réservez en quelques clics",
+      "description": "En vacances ou près de chez vous, trouvez les domaines qui vous ouvrent leurs portes. Horaires, tarifs et créneaux sont à jour. Il ne vous reste qu'à choisir le domaine qui vous ressemble.",
+      "steps": [
+        {
+          "title": "Cherchez près de chez vous",
+          "description": "Découvrez les professionnels autour de vous, par région ou par centre d'intérêt"
+        },
+        {
+          "title": "Consultez les disponibilités",
+          "description": "Horaires, tarifs et créneaux disponibles en temps réel"
+        },
+        {
+          "title": "Réservez en ligne",
+          "description": "Confirmation immédiate, rappels automatiques, aucune mauvaise surprise"
+        }
+      ]
     },
-    "exampleNotice": "ℹ️ Mode exemple : configurez PUBLIC_AUDIT_ENDPOINT pour activer l'audit réel."
-  },
-  "ambition": {
-    "eyebrow": "Notre ambition",
-    "title": "Le vin d'abord. Tout le terroir ensuite.",
-    "description": "On commence par les domaines viticoles, parce que c'est là que le terroir se vit le plus intensément. Mais le savoir-faire français ne s'arrête pas aux vignes. Demain, Loqal ouvrira ses portes aux artisans, producteurs, guides de pêche et de chasse qui font vivre nos régions."
-  },
-  "founder": {
-    "eyebrow": "Fondateur",
-    "name": "Thomas",
-    "title": "Fondateur de Loqal",
-    "bio": "Je suis Thomas, fondateur de Loqal. J'ai conçu et développé la plateforme pour une raison simple : les plus belles rencontres du terroir sont souvent les plus difficiles à trouver et à réserver. Loqal est prêt ; je cherche maintenant les premiers passionnés et les premiers pros pour le lancer. Une question ?"
-  },
-  "faq": {
-    "eyebrow": "Questions fréquentes",
-    "title": "Tout ce que vous devez savoir",
-    "items": [
-      {
-        "question": "Loqal est-il déjà disponible ?",
-        "answer": "La plateforme est développée et prête. Je cherche actuellement les premiers visiteurs et professionnels pour lancer le service dans les prochains mois. Rejoignez la liste d'attente pour être informé du lancement."
+    "pros": {
+      "eyebrow": "Pour les professionnels",
+      "title": "Transmettez votre savoir-faire, on s'occupe du reste",
+      "description": "Accueillir des visiteurs est un plaisir. Les organiser l'est beaucoup moins. Loqal prend en charge votre agenda, vos réservations et vos rappels, et vous gardez le meilleur : la rencontre.",
+      "benefits": [
+        {
+          "title": "Agenda et réservations au même endroit",
+          "description": "Créez vos créneaux, gérez vos disponibilités et acceptez les réservations en un clin d'œil."
+        },
+        {
+          "title": "Plus de temps pour la vigne",
+          "description": "Loqal s'occupe des confirmations et des rappels. Vous gardez vos journées pour ce qui compte."
+        },
+        {
+          "title": "Votre vitrine clé en main",
+          "description": "Une page soignée pour présenter votre savoir-faire, vos activités et vos tarifs, sans créer ni entretenir de site web."
+        }
+      ]
+    },
+    "audit": {
+      "badge": "Audit gratuit",
+      "title": "Vos visiteurs peuvent-ils réserver facilement ?",
+      "description": "Testez gratuitement la réservabilité de votre domaine en quelques secondes.",
+      "form": {
+        "activityName": "Nom de votre activité",
+        "city": "Ville",
+        "website": "Site web (optionnel)",
+        "submit": "Tester mon activité"
       },
-      {
-        "question": "Loqal est-il payant ?",
-        "answer": "Pour les visiteurs, Loqal est gratuit : vous cherchez, réservez et profitez sans frais. Pour les professionnels, un abonnement simple permettra d'accéder à toutes les fonctionnalités : agenda, réservations, rappels automatiques et visibilité. Les conditions tarifaires seront communiquées avant le lancement."
+      "loading": {
+        "message": "Analyse en cours… Notre IA parcourt le web pour évaluer votre visibilité. Cela prend environ 30 secondes.",
+        "steps": [
+          "Recherche de votre fiche Google…",
+          "Vérification de la réservation en ligne…",
+          "Analyse de votre site mobile…",
+          "Évaluation de vos horaires affichés…"
+        ]
       },
-      {
-        "question": "Dans quelles régions Loqal sera-t-il disponible ?",
-        "answer": "Le lancement se fera d'abord dans quelques régions pilotes, puis s'étendra progressivement. Si vous êtes professionnel ou visiteur intéressé, indiquez votre région dans la liste d'attente : cela m'aidera à prioriser le déploiement."
+      "results": {
+        "badge": "Résultats de l'audit",
+        "title": "Détail de votre score",
+        "cta": "Rejoignez la liste d'attente pro",
+        "testAgain": "← Tester une autre activité",
+        "helpText": "Loqal vous aide à devenir réservable en quelques minutes : gérez votre agenda, vos réservations et votre vitrine en ligne, en toute simplicité."
       },
-      {
-        "question": "Quels professionnels peuvent utiliser Loqal ?",
-        "answer": "Au lancement, Loqal s'adresse aux domaines viticoles qui accueillent des visiteurs : caves, châteaux, vignerons indépendants. L'ouverture aux artisans, producteurs et guides du terroir est prévue ensuite. Vous êtes dans l'un de ces métiers ? Inscrivez-vous dès maintenant, vous serez parmi les premiers prévenus."
+      "exampleNotice": "ℹ️ Mode exemple : configurez PUBLIC_AUDIT_ENDPOINT pour activer l'audit réel."
+    },
+    "ambition": {
+      "eyebrow": "Notre ambition",
+      "title": "Le vin d'abord. Tout le terroir ensuite.",
+      "description": "On commence par les domaines viticoles, parce que c'est là que le terroir se vit le plus intensément. Mais le savoir-faire français ne s'arrête pas aux vignes. Demain, Loqal ouvrira ses portes aux artisans, producteurs, guides de pêche et de chasse qui font vivre nos régions."
+    },
+    "founder": {
+      "eyebrow": "Fondateur",
+      "name": "Thomas",
+      "title": "Fondateur de Loqal",
+      "bio": "Je suis Thomas, fondateur de Loqal. J'ai conçu et développé la plateforme pour une raison simple : les plus belles rencontres du terroir sont souvent les plus difficiles à trouver et à réserver. Loqal est prêt ; je cherche maintenant les premiers passionnés et les premiers pros pour le lancer. Une question ?"
+    },
+    "faq": {
+      "eyebrow": "Questions fréquentes",
+      "title": "Tout ce que vous devez savoir",
+      "items": [
+        {
+          "question": "Loqal est-il déjà disponible ?",
+          "answer": "La plateforme est développée et prête. Je cherche actuellement les premiers visiteurs et professionnels pour lancer le service dans les prochains mois. Rejoignez la liste d'attente pour être informé du lancement."
+        },
+        {
+          "question": "Loqal est-il payant ?",
+          "answer": "Pour les visiteurs, Loqal est gratuit : vous cherchez, réservez et profitez sans frais. Pour les professionnels, un abonnement simple permettra d'accéder à toutes les fonctionnalités : agenda, réservations, rappels automatiques et visibilité. Les conditions tarifaires seront communiquées avant le lancement."
+        },
+        {
+          "question": "Dans quelles régions Loqal sera-t-il disponible ?",
+          "answer": "Le lancement se fera d'abord dans quelques régions pilotes, puis s'étendra progressivement. Si vous êtes professionnel ou visiteur intéressé, indiquez votre région dans la liste d'attente : cela m'aidera à prioriser le déploiement."
+        },
+        {
+          "question": "Quels professionnels peuvent utiliser Loqal ?",
+          "answer": "Au lancement, Loqal s'adresse aux domaines viticoles qui accueillent des visiteurs : caves, châteaux, vignerons indépendants. L'ouverture aux artisans, producteurs et guides du terroir est prévue ensuite. Vous êtes dans l'un de ces métiers ? Inscrivez-vous dès maintenant, vous serez parmi les premiers prévenus."
+        },
+        {
+          "question": "Comment fonctionne la liste d'attente ?",
+          "answer": "Indiquez vos centres d'intérêt ou votre activité professionnelle. Vous recevrez un email dès que Loqal sera disponible dans votre région. Aucun engagement, et vos données ne seront utilisées que pour vous tenir informé du lancement."
+        },
+        {
+          "question": "Puis-je poser d'autres questions ?",
+          "answer": "Bien sûr ! Écrivez-moi directement à thomas@loqal.fr, je réponds personnellement à tous les messages."
+        }
+      ]
+    },
+    "waitlist": {
+      "eyebrow": "Lancement prochain",
+      "title": "Rejoignez la liste d'attente",
+      "visitor": {
+        "title": "Visiteur",
+        "fields": {
+          "firstName": "Prénom",
+          "email": "Email",
+          "regions": "Régions d'intérêt (optionnel)",
+          "interests": "Centres d'intérêt"
+        },
+        "interestOptions": [
+          "Vin",
+          "Artisanat",
+          "Pêche",
+          "Chasse",
+          "Gastronomie",
+          "Nature"
+        ],
+        "consent": "J'accepte de recevoir des informations sur le lancement de Loqal. Mes données seront traitées conformément à notre",
+        "submit": "Être prévenu du lancement"
       },
-      {
-        "question": "Comment fonctionne la liste d'attente ?",
-        "answer": "Indiquez vos centres d'intérêt ou votre activité professionnelle. Vous recevrez un email dès que Loqal sera disponible dans votre région. Aucun engagement, et vos données ne seront utilisées que pour vous tenir informé du lancement."
+      "pro": {
+        "title": "Professionnel",
+        "fields": {
+          "name": "Nom et prénom",
+          "email": "Email",
+          "activityName": "Nom de l'activité",
+          "category": "Catégorie",
+          "city": "Commune",
+          "phone": "Téléphone (optionnel)"
+        },
+        "categoryOptions": [
+          "Vigneron / Domaine viticole",
+          "Artisan d'art",
+          "Guide de pêche",
+          "Guide de chasse",
+          "Producteur local",
+          "Autre"
+        ],
+        "consent": "J'accepte de recevoir des informations sur le lancement de Loqal. Mes données seront traitées conformément à notre",
+        "submit": "Réserver ma place de pro fondateur"
       },
-      {
-        "question": "Puis-je poser d'autres questions ?",
-        "answer": "Bien sûr ! Écrivez-moi directement à thomas@loqal.fr, je réponds personnellement à tous les messages."
-      }
-    ]
-  },
-  "waitlist": {
-    "eyebrow": "Lancement prochain",
-    "title": "Rejoignez la liste d'attente",
-    "visitor": {
-      "title": "Visiteur",
-      "fields": {
-        "firstName": "Prénom",
-        "email": "Email",
-        "regions": "Régions d'intérêt (optionnel)",
-        "interests": "Centres d'intérêt"
-      },
-      "interestOptions": [
-        "Vin",
-        "Artisanat",
-        "Pêche",
-        "Chasse",
-        "Gastronomie",
-        "Nature"
+      "success": "Merci ! Vous recevrez un email dès que Loqal sera disponible.",
+      "error": "Une erreur est survenue. Veuillez réessayer ou nous contacter directement.",
+      "privacyLink": "politique de confidentialité"
+    },
+    "footer": {
+      "tagline": "La plateforme qui ouvre les portes des domaines viticoles, et bientôt de tout le terroir.",
+      "legal": [
+        {
+          "label": "Mentions légales",
+          "href": "/mentions-legales"
+        },
+        {
+          "label": "Politique de confidentialité",
+          "href": "/politique-confidentialite"
+        }
       ],
-      "consent": "J'accepte de recevoir des informations sur le lancement de Loqal. Mes données seront traitées conformément à notre",
-      "submit": "Être prévenu du lancement"
-    },
-    "pro": {
-      "title": "Professionnel",
-      "fields": {
-        "name": "Nom et prénom",
-        "email": "Email",
-        "activityName": "Nom de l'activité",
-        "category": "Catégorie",
-        "city": "Commune",
-        "phone": "Téléphone (optionnel)"
-      },
-      "categoryOptions": [
-        "Vigneron / Domaine viticole",
-        "Artisan d'art",
-        "Guide de pêche",
-        "Guide de chasse",
-        "Producteur local",
-        "Autre"
-      ],
-      "consent": "J'accepte de recevoir des informations sur le lancement de Loqal. Mes données seront traitées conformément à notre",
-      "submit": "Réserver ma place de pro fondateur"
-    },
-    "success": "Merci ! Vous recevrez un email dès que Loqal sera disponible.",
-    "error": "Une erreur est survenue. Veuillez réessayer ou nous contacter directement."
+      "copyright": "© 2026 Loqal. Tous droits réservés."
+    }
   },
-  "footer": {
-    "tagline": "La plateforme qui ouvre les portes des domaines viticoles, et bientôt de tout le terroir.",
-    "legal": [
-      {
-        "label": "Mentions légales",
-        "href": "/mentions-legales"
-      },
-      {
-        "label": "Politique de confidentialité",
-        "href": "/politique-confidentialite"
+  "en": {
+    "meta": {
+      "title": "Loqal – Book Wine Estate Visits and Tastings",
+      "description": "Discover and book visits and tastings at wine estates. Winemakers: manage your schedule and bookings simply. Join the waitlist."
+    },
+    "hero": {
+      "title": "Terroir, from the inside.",
+      "subtitle": "Behind every bottle is a winemaker ready to share their story. Loqal opens the door.",
+      "cta": {
+        "visitor": "Join the waitlist"
       }
-    ],
-    "copyright": "© 2026 Loqal. Tous droits réservés."
+    },
+    "univers": {
+      "eyebrow": "Discover",
+      "title": "The vineyard, behind the scenes",
+      "subtitle": "Every estate has its own way of welcoming you. Here are a few.",
+      "badges": [
+        "Cellar tour",
+        "Tasting",
+        "Vineyard walk",
+        "Food & wine pairing",
+        "Harvest",
+        "Blending workshop",
+        "Meet the winemaker"
+      ]
+    },
+    "visitors": {
+      "eyebrow": "For visitors",
+      "title": "Find and book in a few clicks",
+      "description": "On holiday or near home, find estates that open their doors to you. Times, prices and slots are up to date. All you have to do is choose the estate that suits you.",
+      "steps": [
+        {
+          "title": "Search near you",
+          "description": "Discover professionals around you, by region or interest"
+        },
+        {
+          "title": "Check availability",
+          "description": "Times, prices and slots available in real time"
+        },
+        {
+          "title": "Book online",
+          "description": "Instant confirmation, automatic reminders, no surprises"
+        }
+      ]
+    },
+    "pros": {
+      "eyebrow": "For professionals",
+      "title": "Share your craft, we handle the rest",
+      "description": "Welcoming visitors is a pleasure. Organising them is much less so. Loqal takes care of your schedule, bookings and reminders, and you keep the best part: the meeting.",
+      "benefits": [
+        {
+          "title": "Schedule and bookings in one place",
+          "description": "Create your slots, manage your availability and accept bookings in a snap."
+        },
+        {
+          "title": "More time for the vineyard",
+          "description": "Loqal handles confirmations and reminders. You keep your days for what matters."
+        },
+        {
+          "title": "Your showcase ready to go",
+          "description": "A polished page to present your craft, activities and prices, with no website to create or maintain."
+        }
+      ]
+    },
+    "audit": {
+      "badge": "Free audit",
+      "title": "Can your visitors book easily?",
+      "description": "Test your estate's bookability for free in seconds.",
+      "form": {
+        "activityName": "Your estate name",
+        "city": "City",
+        "website": "Website (optional)",
+        "submit": "Test my estate"
+      },
+      "loading": {
+        "message": "Analysing… Our AI is scanning the web to assess your visibility. This takes about 30 seconds.",
+        "steps": [
+          "Finding your Google listing…",
+          "Checking online booking…",
+          "Analysing your mobile site…",
+          "Evaluating your opening hours…"
+        ]
+      },
+      "results": {
+        "badge": "Audit results",
+        "title": "Your score breakdown",
+        "cta": "Join the pro waitlist",
+        "testAgain": "← Test another estate",
+        "helpText": "Loqal helps you become bookable in minutes: manage your schedule, bookings and online presence, simply."
+      },
+      "exampleNotice": "ℹ️ Example mode: configure PUBLIC_AUDIT_ENDPOINT to enable the real audit."
+    },
+    "ambition": {
+      "eyebrow": "Our ambition",
+      "title": "Wine first. All of terroir next.",
+      "description": "We start with wine estates, because that's where terroir is most intensely experienced. But French craftsmanship doesn't stop at the vineyard. Tomorrow, Loqal will open its doors to the artisans, producers, fishing and hunting guides who bring our regions to life."
+    },
+    "founder": {
+      "eyebrow": "Founder",
+      "name": "Thomas",
+      "title": "Founder of Loqal",
+      "bio": "I'm Thomas, founder of Loqal. I designed and built the platform for one simple reason: the best terroir experiences are often the hardest to find and book. Loqal is ready; I'm now looking for the first enthusiasts and professionals to launch it. Any questions?"
+    },
+    "faq": {
+      "eyebrow": "Frequently asked questions",
+      "title": "Everything you need to know",
+      "items": [
+        {
+          "question": "Is Loqal already available?",
+          "answer": "The platform is developed and ready. I'm currently looking for the first visitors and professionals to launch the service in the coming months. Join the waitlist to be notified of the launch."
+        },
+        {
+          "question": "Is Loqal paid?",
+          "answer": "For visitors, Loqal is free: you search, book and enjoy at no cost. For professionals, a simple subscription will give access to all features: schedule, bookings, automatic reminders and visibility. Pricing will be shared before launch."
+        },
+        {
+          "question": "In which regions will Loqal be available?",
+          "answer": "The launch will first happen in a few pilot regions, then expand gradually. If you're a professional or interested visitor, indicate your region on the waitlist: it will help me prioritise the rollout."
+        },
+        {
+          "question": "Which professionals can use Loqal?",
+          "answer": "At launch, Loqal is for wine estates welcoming visitors: cellars, châteaux, independent winemakers. Opening to artisans, producers and terroir guides is planned next. In one of these fields? Sign up now, you'll be among the first notified."
+        },
+        {
+          "question": "How does the waitlist work?",
+          "answer": "Indicate your interests or professional activity. You'll receive an email as soon as Loqal is available in your region. No commitment, and your data will only be used to keep you informed of the launch."
+        },
+        {
+          "question": "Can I ask other questions?",
+          "answer": "Of course! Write to me directly at thomas@loqal.fr, I personally reply to all messages."
+        }
+      ]
+    },
+    "waitlist": {
+      "eyebrow": "Launching soon",
+      "title": "Join the waitlist",
+      "visitor": {
+        "title": "Visitor",
+        "fields": {
+          "firstName": "First name",
+          "email": "Email",
+          "regions": "Regions of interest (optional)",
+          "interests": "Interests"
+        },
+        "interestOptions": [
+          "Wine",
+          "Crafts",
+          "Fishing",
+          "Hunting",
+          "Gastronomy",
+          "Nature"
+        ],
+        "consent": "I agree to receive information about Loqal's launch. My data will be processed in accordance with our",
+        "submit": "Be notified of the launch"
+      },
+      "pro": {
+        "title": "Professional",
+        "fields": {
+          "name": "Name",
+          "email": "Email",
+          "activityName": "Estate name",
+          "category": "Category",
+          "city": "Town",
+          "phone": "Phone (optional)"
+        },
+        "categoryOptions": [
+          "Winemaker / Wine estate",
+          "Artisan",
+          "Fishing guide",
+          "Hunting guide",
+          "Local producer",
+          "Other"
+        ],
+        "consent": "I agree to receive information about Loqal's launch. My data will be processed in accordance with our",
+        "submit": "Reserve my founding pro spot"
+      },
+      "success": "Thank you! You'll receive an email as soon as Loqal is available.",
+      "error": "An error occurred. Please try again or contact us directly.",
+      "privacyLink": "privacy policy"
+    },
+    "footer": {
+      "tagline": "The platform that opens the doors of wine estates, and soon of all terroir.",
+      "legal": [
+        {
+          "label": "Legal notice",
+          "href": "/en/legal-notice"
+        },
+        {
+          "label": "Privacy policy",
+          "href": "/en/privacy"
+        }
+      ],
+      "copyright": "© 2026 Loqal. All rights reserved."
+    }
   }
 }

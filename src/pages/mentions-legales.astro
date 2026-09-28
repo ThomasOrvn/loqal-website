@@ -2,13 +2,16 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+
+const locale = 'fr';
 ---
 
 <Layout
   title="Mentions légales - Loqal"
   description="Mentions légales du site Loqal"
+  locale={locale}
 >
-  <Header />
+  <Header locale={locale} />
   <main class="min-h-screen">
     <div class="container-custom py-21">
       <div class="max-w-3xl mx-auto">
@@ -54,5 +57,5 @@ import Footer from '../components/Footer.astro';
       </div>
     </div>
   </main>
-  <Footer />
+  <Footer locale={locale} />
 </Layout>

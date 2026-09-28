@@ -13,21 +13,22 @@ import Waitlist from '../components/Waitlist.astro';
 import Footer from '../components/Footer.astro';
 import siteData from '../content/site.json';
 
-const { meta } = siteData;
+const locale = 'fr';
+const { meta } = siteData[locale];
 ---
 
-<Layout title={meta.title} description={meta.description}>
-  <Header />
+<Layout title={meta.title} description={meta.description} locale={locale}>
+  <Header locale={locale} />
   <main>
-    <Hero />
-    <Univers />
-    <Visitors />
-    <Pros />
-    <Audit />
-    <Founder />
-    <FAQ />
-    <Ambition />
-    <Waitlist />
+    <Hero locale={locale} />
+    <Univers locale={locale} />
+    <Visitors locale={locale} />
+    <Pros locale={locale} />
+    <Audit locale={locale} />
+    <Founder locale={locale} />
+    <FAQ locale={locale} />
+    <Ambition locale={locale} />
+    <Waitlist locale={locale} />
   </main>
-  <Footer />
+  <Footer locale={locale} />
 </Layout>

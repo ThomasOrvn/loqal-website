@@ -1,0 +1,61 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const locale = 'en';
+---
+
+<Layout
+  title="Legal Notice - Loqal"
+  description="Loqal website legal notice"
+  locale={locale}
+>
+  <Header locale={locale} />
+  <main class="min-h-screen">
+    <div class="container-custom py-21">
+      <div class="max-w-3xl mx-auto">
+        <h1 class="text-h2 font-serif mb-8">Legal Notice</h1>
+
+        <section class="mb-8">
+          <h2 class="text-2xl font-serif mb-4">Site Publisher</h2>
+          <p class="text-warmgrey mb-2">
+            The loqal.fr website is published by Thomas Orvain (company being incorporated).
+          </p>
+          <p class="text-warmgrey mb-2">
+            <strong>Contact:</strong> <a href="mailto:thomas@loqal.fr" class="text-olive hover:underline">thomas@loqal.fr</a>
+          </p>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-2xl font-serif mb-4">Publication Director</h2>
+          <p class="text-warmgrey">
+            Thomas Orvain
+          </p>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-2xl font-serif mb-4">Hosting</h2>
+          <p class="text-warmgrey">
+            This site is hosted by GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA (GitHub Pages).
+          </p>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-2xl font-serif mb-4">Personal Data</h2>
+          <p class="text-warmgrey">
+            Data collected via the waitlist and free audit forms is stored in Google Sheets (Google Workspace). It is used only to inform you of Loqal's launch and to perform the bookability audit. Your data is never sold to third parties. You have the right to access, rectify and delete your data by contacting us at <a href="mailto:thomas@loqal.fr" class="text-olive hover:underline">thomas@loqal.fr</a>. For more information, see our <a href="/en/privacy" class="text-olive hover:underline">privacy policy</a>.
+          </p>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-2xl font-serif mb-4">Photo Credits</h2>
+          <p class="text-warmgrey">
+            The photographs used on this site are AI-generated and are the property of Loqal.
+          </p>
+        </section>
+      </div>
+    </div>
+  </main>
+  <Footer locale={locale} />
+</Layout>

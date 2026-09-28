@@ -1,7 +1,13 @@
 ---
 import siteData from '../content/site.json';
 
-const { waitlist } = siteData;
+interface Props {
+  locale?: 'fr' | 'en';
+}
+
+const { locale = 'fr' } = Astro.props;
+const { waitlist } = siteData[locale];
+const privacyLink = locale === 'en' ? '/en/privacy' : '/politique-confidentialite';
 ---
 
 <section id="liste-attente" class="section-padding section-border bg-ink/[0.02]">
@@ -115,10 +121,10 @@ const { waitlist } = siteData;
             <span class="text-sm text-warmgrey">
               {waitlist.visitor.consent}{' '}
               <a
-                href="/politique-confidentialite"
+                href={privacyLink}
                 class="text-olive hover:underline"
               >
-                politique de confidentialité
+                {waitlist.privacyLink}
               </a>.
             </span>
           </label>
@@ -245,10 +251,10 @@ const { waitlist } = siteData;
             <span class="text-sm text-warmgrey">
               {waitlist.pro.consent}{' '}
               <a
-                href="/politique-confidentialite"
+                href={privacyLink}
                 class="text-olive hover:underline"
               >
-                politique de confidentialité
+                {waitlist.privacyLink}
               </a>.
             </span>
           </label>
@@ -270,7 +276,7 @@ const { waitlist } = siteData;
   </div>
 </section>
 
-<script>
+<script define:vars={{ locale, successMsg: waitlist.success, errorMsg: waitlist.error }}>
   // Get endpoint from env - use PUBLIC_WAITLIST_ENDPOINT if set, otherwise fall back to PUBLIC_AUDIT_ENDPOINT
   const WAITLIST_ENDPOINT = import.meta.env.PUBLIC_WAITLIST_ENDPOINT || import.meta.env.PUBLIC_AUDIT_ENDPOINT || '';
 
@@ -357,7 +363,8 @@ const { waitlist } = siteData;
 
     // Disable submit button
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Envoi en cours...';
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = locale === 'en' ? 'Sending...' : 'Envoi en cours...';
 
     // Collect form data
     const formData = new FormData(form);
@@ -376,6 +383,9 @@ const { waitlist } = siteData;
     if (data.interests && Array.isArray(data.interests)) {
       data.interests = data.interests.join(', ');
     }
+
+    // Add language parameter
+    data.lang = locale;
 
     try {
       if (!WAITLIST_ENDPOINT) {
@@ -406,7 +416,7 @@ const { waitlist } = siteData;
 
       if (result.ok) {
         // Success
-        messageEl.textContent = 'Merci ! Vous recevrez un email dès que Loqal sera disponible.';
+        messageEl.textContent = successMsg;
         messageEl.className = 'p-4 rounded text-sm bg-olive/10 text-olive border border-olive/20';
         messageEl.classList.remove('hidden');
         form.reset();
@@ -415,15 +425,15 @@ const { waitlist } = siteData;
       }
     } catch (error) {
       // Error
-      messageEl.textContent = 'Une erreur est survenue. Veuillez réessayer ou nous contacter directement.';
+      messageEl.textContent = errorMsg;
       messageEl.className = 'p-4 rounded text-sm bg-red-50 text-red-700 border border-red-200';
       messageEl.classList.remove('hidden');
     } finally {
       // Re-enable submit button
       submitBtn.disabled = false;
-      submitBtn.textContent = formType === 'visitor' 
-        ? 'Être prévenu du lancement' 
-        : 'Réserver ma place de pro fondateur';
+      submitBtn.textContent = originalText || (formType === 'visitor' 
+        ? (locale === 'en' ? 'Be notified of the launch' : 'Être prévenu du lancement')
+        : (locale === 'en' ? 'Reserve my founding pro spot' : 'Réserver ma place de pro fondateur'));
     }
   }
 

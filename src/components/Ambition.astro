@@ -1,29 +1,33 @@
 ---
 import siteData from '../content/site.json';
 
-const { ambition } = siteData;
+interface Props {
+  locale?: 'fr' | 'en';
+}
 
-// Images showing other terroir trades (future scope) - AI-generated
+const { locale = 'fr' } = Astro.props;
+const { ambition } = siteData[locale];
+
 const terroir_images = [
   {
     src: '/images/univers/ambition-artisans.webp',
-    alt: 'Artisans',
-    label: 'Artisans'
+    alt: locale === 'en' ? 'Artisans' : 'Artisans',
+    label: locale === 'en' ? 'Artisans' : 'Artisans'
   },
   {
     src: '/images/univers/ambition-producteurs.webp',
-    alt: 'Producteurs',
-    label: 'Producteurs'
+    alt: locale === 'en' ? 'Producers' : 'Producteurs',
+    label: locale === 'en' ? 'Producers' : 'Producteurs'
   },
   {
     src: '/images/univers/ambition-peche.webp',
-    alt: 'Pêche',
-    label: 'Pêche'
+    alt: locale === 'en' ? 'Fishing' : 'Pêche',
+    label: locale === 'en' ? 'Fishing' : 'Pêche'
   },
   {
     src: '/images/univers/ambition-chasse.webp',
-    alt: 'Chasse',
-    label: 'Chasse'
+    alt: locale === 'en' ? 'Hunting' : 'Chasse',
+    label: locale === 'en' ? 'Hunting' : 'Chasse'
   },
 ];
 ---

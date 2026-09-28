@@ -1,7 +1,13 @@
 ---
 import siteData from '../content/site.json';
 
-const { footer, meta } = siteData;
+interface Props {
+  locale?: 'fr' | 'en';
+}
+
+const { locale = 'fr' } = Astro.props;
+const { footer } = siteData[locale];
+const { meta } = siteData;
 ---
 
 <footer class="bg-ink text-ivory border-t border-ivory/10">
@@ -41,7 +47,7 @@ const { footer, meta } = siteData;
       <!-- Legal -->
       <div>
         <h3 class="font-sans text-sm font-semibold mb-3 uppercase tracking-wider">
-          Légal
+          {locale === 'en' ? 'Legal' : 'Légal'}
         </h3>
         <div class="space-y-2">
           {

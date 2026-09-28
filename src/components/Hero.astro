@@ -1,7 +1,13 @@
 ---
 import siteData from '../content/site.json';
 
-const { hero } = siteData;
+interface Props {
+  locale?: 'fr' | 'en';
+}
+
+const { locale = 'fr' } = Astro.props;
+const { hero } = siteData[locale];
+const homeLink = locale === 'en' ? '/en/' : '/';
 ---
 
 <section
@@ -28,7 +34,7 @@ const { hero } = siteData;
         style="animation-delay: 0.2s"
       >
         <a
-          href="/#liste-attente"
+          href={`${homeLink}#liste-attente`}
           class="btn-hero group"
         >
           {hero.cta.visitor}

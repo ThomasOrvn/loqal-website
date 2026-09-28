@@ -1,7 +1,13 @@
 ---
-// Audit component for professional reservability score
 import siteContent from '../content/site.json';
-const audit = siteContent.audit;
+
+interface Props {
+  locale?: 'fr' | 'en';
+}
+
+const { locale = 'fr' } = Astro.props;
+const audit = siteContent[locale].audit;
+const homeLink = locale === 'en' ? '/en/' : '/';
 ---
 
 <section id="audit" class="section-padding section-border bg-warmgrey/5">
@@ -12,7 +18,7 @@ const audit = siteContent.audit;
         <div class="flex justify-center lg:justify-end">
           <div class="relative w-72 h-72" id="gauge-container" aria-live="polite">
             <!-- SVG Gauge -->
-            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 200 200" role="img" aria-label="Jauge de score de réservabilité">
+            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 200 200" role="img" aria-label={locale === 'en' ? 'Bookability score gauge' : 'Jauge de score de réservabilité'}>
               <!-- Background circle -->
               <circle
                 cx="100"
@@ -70,7 +76,7 @@ const audit = siteContent.audit;
                   id="activity-name"
                   name="activityName"
                   required
-                  placeholder="Domaine Dupont, Atelier Bois de la Forêt..."
+                  placeholder={locale === 'en' ? 'Estate Dupont, Wood Workshop...' : 'Domaine Dupont, Atelier Bois de la Forêt...'}
                   class="w-full px-4 py-3 border border-borderline rounded focus:outline-none focus:ring-2 focus:ring-olive transition-all"
                 />
               </div>
@@ -84,7 +90,7 @@ const audit = siteContent.audit;
                   id="city"
                   name="city"
                   required
-                  placeholder="Beaune, Annecy..."
+                  placeholder={locale === 'en' ? 'Beaune, Annecy...' : 'Beaune, Annecy...'}
                   class="w-full px-4 py-3 border border-borderline rounded focus:outline-none focus:ring-2 focus:ring-olive transition-all"
                 />
               </div>
@@ -97,7 +103,7 @@ const audit = siteContent.audit;
                   type="url"
                   id="website-url"
                   name="url"
-                  placeholder="https://www.votre-domaine.fr"
+                  placeholder={locale === 'en' ? 'https://www.your-estate.com' : 'https://www.votre-domaine.fr'}
                   class="w-full px-4 py-3 border border-borderline rounded focus:outline-none focus:ring-2 focus:ring-olive transition-all"
                 />
               </div>
@@ -149,7 +155,7 @@ const audit = siteContent.audit;
             </div>
 
             <a
-              href="/#liste-attente"
+              href={`${homeLink}#liste-attente`}
               data-tab="pro"
               id="audit-cta"
               class="inline-flex items-center px-6 py-3 bg-ink text-ivory font-medium rounded hover:bg-olive transition-colors"
@@ -182,7 +188,7 @@ const audit = siteContent.audit;
   </div>
 </section>
 
-<script>
+<script define:vars={{ loadingSteps: audit.loading.steps, locale }}>
   // Check if endpoint is configured
   const auditEndpoint = import.meta.env.PUBLIC_AUDIT_ENDPOINT || '';
   const isConfigured = auditEndpoint.trim() !== '';
@@ -198,13 +204,7 @@ const audit = siteContent.audit;
     url: ''
   };
 
-  // Loading step rotation
-  const loadingSteps = [
-    'Recherche de votre fiche Google…',
-    'Vérification de la réservation en ligne…',
-    'Analyse de votre site mobile…',
-    'Évaluation de vos horaires affichés…'
-  ];
+  // Loading step rotation - use localized steps from define:vars
   let currentStepIndex = 0;
   let stepRotationInterval: number | null = null;
 
@@ -342,9 +342,10 @@ const audit = siteContent.audit;
 
     // Disable form and show loading
     const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    const submitBtnText = submitBtn?.textContent || '';
     if (submitBtn) {
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Analyse en cours…';
+      submitBtn.textContent = locale === 'en' ? 'Analysing…' : 'Analyse en cours…';
     }
 
     // Start loading steps
@@ -354,42 +355,76 @@ const audit = siteContent.audit;
       if (!isConfigured) {
         // Show example result if not configured
         await new Promise((resolve) => setTimeout(resolve, 2000));
+        const exampleCriteria = locale === 'en' ? [
+          {
+            id: 'booking',
+            label: 'Online booking with available slots',
+            ok: false,
+            points: 35,
+            conseil: 'Offer online booking for your visits and tastings with real-time slots, which is exactly what Loqal lets you do simply.',
+            source: ''
+          },
+          {
+            id: 'hours',
+            label: 'Opening hours/visit times displayed',
+            ok: true,
+            points: 25,
+            conseil: '',
+            source: url || ''
+          },
+          {
+            id: 'mobile',
+            label: 'Mobile-friendly site',
+            ok: true,
+            points: 20,
+            conseil: '',
+            source: ''
+          },
+          {
+            id: 'google',
+            label: 'Complete Google Business listing with hours and photos',
+            ok: false,
+            points: 20,
+            conseil: 'Complete your Google Business Profile with detailed hours and quality photos.',
+            source: ''
+          }
+        ] : [
+          {
+            id: 'booking',
+            label: 'Réservation en ligne avec créneaux disponibles',
+            ok: false,
+            points: 35,
+            conseil: 'Proposez la réservation en ligne de vos visites et dégustations avec créneaux en temps réel, c\'est ce que Loqal vous permet de faire simplement.',
+            source: ''
+          },
+          {
+            id: 'hours',
+            label: 'Horaires/périodes de visite affichés',
+            ok: true,
+            points: 25,
+            conseil: '',
+            source: url || ''
+          },
+          {
+            id: 'mobile',
+            label: 'Site adapté au mobile',
+            ok: true,
+            points: 20,
+            conseil: '',
+            source: ''
+          },
+          {
+            id: 'google',
+            label: 'Fiche Google Business complète avec horaires et photos',
+            ok: false,
+            points: 20,
+            conseil: 'Complétez votre fiche Google Business Profile avec des horaires détaillés et des photos de qualité.',
+            source: ''
+          }
+        ];
         showResults({
           score: 45,
-          criteria: [
-            {
-              id: 'booking',
-              label: 'Réservation en ligne avec créneaux disponibles',
-              ok: false,
-              points: 35,
-              conseil: 'Ajoutez un système de réservation en ligne (Calendly, Regiondo, etc.) avec vos créneaux disponibles.',
-              source: ''
-            },
-            {
-              id: 'hours',
-              label: 'Horaires/périodes de visite affichés',
-              ok: true,
-              points: 25,
-              conseil: '',
-              source: url || ''
-            },
-            {
-              id: 'mobile',
-              label: 'Site adapté au mobile',
-              ok: true,
-              points: 20,
-              conseil: '',
-              source: ''
-            },
-            {
-              id: 'google',
-              label: 'Fiche Google Business complète avec horaires et photos',
-              ok: false,
-              points: 20,
-              conseil: 'Complétez votre fiche Google Business Profile avec des horaires détaillés et des photos de qualité.',
-              source: ''
-            }
-          ]
+          criteria: exampleCriteria
         });
       } else {
         // Call actual endpoint (no timeout - browser default is ~5 minutes)
@@ -402,11 +437,12 @@ const audit = siteContent.audit;
             activityName: activityName,
             city: city,
             url: url,
+            lang: locale,
           }),
         });
 
         if (!response.ok) {
-          throw new Error('Erreur lors de l\'audit');
+          throw new Error(locale === 'en' ? 'Audit error' : 'Erreur lors de l\'audit');
         }
 
         const text = await response.text();
@@ -428,13 +464,13 @@ const audit = siteContent.audit;
         errorDiv.textContent =
           error instanceof Error
             ? error.message
-            : 'Une erreur est survenue. Veuillez réessayer.';
+            : (locale === 'en' ? 'An error occurred. Please try again.' : 'Une erreur est survenue. Veuillez réessayer.');
         errorDiv.classList.remove('hidden');
       }
     } finally {
       if (submitBtn) {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Tester mon activité';
+        submitBtn.textContent = submitBtnText;
       }
     }
   });

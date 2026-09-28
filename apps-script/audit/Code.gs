@@ -120,7 +120,8 @@ function handleWaitlist(params) {
       const firstName = type === 'visiteur' 
         ? (params.firstName || params.name || '')
         : (params.firstName || '');
-      sendWaitlistConfirmationEmail(email, type, firstName);
+      const lang = params.lang || 'fr';
+      sendWaitlistConfirmationEmail(email, type, firstName, lang);
     } catch (emailError) {
       console.error('Failed to send confirmation email:', emailError);
       // Don't fail the registration if email fails
@@ -140,7 +141,9 @@ function handleWaitlist(params) {
 /**
  * Send confirmation email after waitlist registration
  */
-function sendWaitlistConfirmationEmail(email, type, firstName) {
+function sendWaitlistConfirmationEmail(email, type, firstName, lang) {
+  lang = lang || 'fr'; // Default to French if not specified
+  
   try {
     // Check if contact@loqal.fr alias is available
     const aliases = GmailApp.getAliases();
@@ -155,21 +158,23 @@ function sendWaitlistConfirmationEmail(email, type, firstName) {
     // Prepare email content based on type
     const isVisitor = type === 'visiteur';
     
-    // For pros, only use firstName if it's from params.firstName (not params.name which might be domain name)
-    // For visitors, use firstName if provided
     const useFirstName = firstName && firstName.trim() !== '';
-    const greeting = useFirstName ? `Bonjour ${firstName},` : 'Bonjour,';
-    const greetingHtml = useFirstName ? `Bonjour ${escapeHtml(firstName)},` : 'Bonjour,';
+    const greeting = lang === 'en'
+      ? (useFirstName ? `Hello ${firstName},` : 'Hello,')
+      : (useFirstName ? `Bonjour ${firstName},` : 'Bonjour,');
+    const greetingHtml = lang === 'en'
+      ? (useFirstName ? `Hello ${escapeHtml(firstName)},` : 'Hello,')
+      : (useFirstName ? `Bonjour ${escapeHtml(firstName)},` : 'Bonjour,');
     
-    const subject = isVisitor 
-      ? 'Bienvenue sur Loqal'
-      : 'Votre inscription à Loqal';
+    const subject = lang === 'en'
+      ? (isVisitor ? 'Welcome to Loqal' : 'Your Loqal registration')
+      : (isVisitor ? 'Bienvenue sur Loqal' : 'Votre inscription à Loqal');
 
     // HTML version
-    const htmlBody = createEmailHtml(greetingHtml, isVisitor);
+    const htmlBody = createEmailHtml(greetingHtml, isVisitor, lang);
     
     // Plain text version
-    const textBody = createEmailText(greeting, isVisitor);
+    const textBody = createEmailText(greeting, isVisitor, lang);
 
     // Send email
     const options = {
@@ -208,19 +213,40 @@ function escapeHtml(text) {
 /**
  * Create HTML email body
  */
-function createEmailHtml(greeting, isVisitor) {
-  const content = isVisitor
-    ? `<p>${greeting}</p>
-       <p>Merci de votre inscription. Vous serez parmi les premiers informés de l'ouverture de Loqal et des premiers domaines viticoles disponibles sur la plateforme.</p>
-       <p>À très bientôt,</p>`
-    : `<p>${greeting}</p>
-       <p>Merci de votre inscription. Nous revenons vers vous très prochainement pour vous présenter Loqal et échanger sur vos besoins.</p>
-       <p>N'hésitez pas à répondre directement à cet e-mail si vous avez des questions.</p>
-       <p>À très bientôt,</p>`;
+function createEmailHtml(greeting, isVisitor, lang) {
+  lang = lang || 'fr';
+  
+  const content = lang === 'en'
+    ? (isVisitor
+        ? `<p>${greeting}</p>
+           <p>Thank you for signing up. You'll be among the first notified when Loqal launches and the first wine estates become available on the platform.</p>
+           <p>See you soon,</p>`
+        : `<p>${greeting}</p>
+           <p>Thank you for signing up. We'll get back to you very soon to introduce Loqal and discuss your needs.</p>
+           <p>Feel free to reply directly to this email if you have any questions.</p>
+           <p>See you soon,</p>`)
+    : (isVisitor
+        ? `<p>${greeting}</p>
+           <p>Merci de votre inscription. Vous serez parmi les premiers informés de l'ouverture de Loqal et des premiers domaines viticoles disponibles sur la plateforme.</p>
+           <p>À très bientôt,</p>`
+        : `<p>${greeting}</p>
+           <p>Merci de votre inscription. Nous revenons vers vous très prochainement pour vous présenter Loqal et échanger sur vos besoins.</p>
+           <p>N'hésitez pas à répondre directement à cet e-mail si vous avez des questions.</p>
+           <p>À très bientôt,</p>`);
+
+  const signature = lang === 'en'
+    ? `<p style="margin-top: 24px; margin-bottom: 8px;">
+         <strong>Thomas</strong><br>
+         <span style="color: #69776E;">Founder, Loqal</span>
+       </p>`
+    : `<p style="margin-top: 24px; margin-bottom: 8px;">
+         <strong>Thomas</strong><br>
+         <span style="color: #69776E;">Fondateur de Loqal</span>
+       </p>`;
 
   return `
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="${lang}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -234,10 +260,7 @@ function createEmailHtml(greeting, isVisitor) {
           <tr>
             <td style="padding: 40px 40px 32px 40px; color: #213B2F; font-size: 16px; line-height: 1.6;">
               ${content}
-              <p style="margin-top: 24px; margin-bottom: 8px;">
-                <strong>Thomas</strong><br>
-                <span style="color: #69776E;">Fondateur de Loqal</span>
-              </p>
+              ${signature}
               <p style="margin: 16px 0;">
                 <img src="https://loqal.fr/logo.png" alt="Loqal" width="130" style="display: block; border: 0;">
               </p>
@@ -257,26 +280,48 @@ function createEmailHtml(greeting, isVisitor) {
 /**
  * Create plain text email body
  */
-function createEmailText(greeting, isVisitor) {
-  const content = isVisitor
-    ? `${greeting}
+function createEmailText(greeting, isVisitor, lang) {
+  lang = lang || 'fr';
+  
+  const content = lang === 'en'
+    ? (isVisitor
+        ? `${greeting}
+
+Thank you for signing up. You'll be among the first notified when Loqal launches and the first wine estates become available on the platform.
+
+See you soon,`
+        : `${greeting}
+
+Thank you for signing up. We'll get back to you very soon to introduce Loqal and discuss your needs.
+
+Feel free to reply directly to this email if you have any questions.
+
+See you soon,`)
+    : (isVisitor
+        ? `${greeting}
 
 Merci de votre inscription. Vous serez parmi les premiers informés de l'ouverture de Loqal et des premiers domaines viticoles disponibles sur la plateforme.
 
 À très bientôt,`
-    : `${greeting}
+        : `${greeting}
 
 Merci de votre inscription. Nous revenons vers vous très prochainement pour vous présenter Loqal et échanger sur vos besoins.
 
 N'hésitez pas à répondre directement à cet e-mail si vous avez des questions.
 
-À très bientôt,`;
+À très bientôt,`);
+
+  const signature = lang === 'en'
+    ? `Thomas
+Founder, Loqal
+loqal.fr`
+    : `Thomas
+Fondateur de Loqal
+loqal.fr`;
 
   return `${content}
 
-Thomas
-Fondateur de Loqal
-loqal.fr`;
+${signature}`;
 }
 
 /**
@@ -348,8 +393,9 @@ function handleAudit(params) {
       }
     }
 
-    // Appeler l'API Gemini
-    const result = callGeminiAudit(activityName, city, url, siteHints);
+    // Appeler l'API Gemini with lang parameter
+    const lang = params.lang || 'fr';
+    const result = callGeminiAudit(activityName, city, url, siteHints, lang);
     
     if (result.error) {
       // Ne pas mettre en cache ni compter les erreurs
@@ -380,7 +426,9 @@ function handleAudit(params) {
 /**
  * Appelle l'API Gemini pour analyser la réservabilité
  */
-function callGeminiAudit(activityName, city, url, siteHints) {
+function callGeminiAudit(activityName, city, url, siteHints, lang) {
+  lang = lang || 'fr'; // Default to French if not specified
+  
   const apiKey = PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');
   
   if (!apiKey) {
@@ -390,22 +438,98 @@ function callGeminiAudit(activityName, city, url, siteHints) {
     };
   }
 
-  // Construction du prompt
-  let prompt = `Tu es un expert en réservabilité et en présence en ligne pour les activités du terroir français.
+  // Build prompt based on language
+  let prompt = lang === 'en'
+    ? `You are an expert in bookability and online presence for French terroir businesses.
+
+Analyse the bookability of this estate:
+- Name: ${activityName}
+- Town: ${city}`
+    : `Tu es un expert en réservabilité et en présence en ligne pour les activités du terroir français.
 
 Analyse la réservabilité de cette activité :
 - Nom : ${activityName}
 - Ville : ${city}`;
 
   if (url) {
-    prompt += `\n- Site web : ${url}`;
+    prompt += lang === 'en' ? `\n- Website: ${url}` : `\n- Site web : ${url}`;
   }
 
   if (siteHints) {
-    prompt += `\n\nIndices techniques du site web :\n${JSON.stringify(siteHints, null, 2)}`;
+    prompt += lang === 'en'
+      ? `\n\nTechnical hints from website:\n${JSON.stringify(siteHints, null, 2)}`
+      : `\n\nIndices techniques du site web :\n${JSON.stringify(siteHints, null, 2)}`;
   }
 
-  prompt += `
+  prompt += lang === 'en'
+    ? `
+
+Use Google Search to check these 4 precise criteria:
+
+1. **Online booking with available slots** (35 points)
+   - Does the estate offer a functional online booking system?
+   - Are slots/dates visible and available?
+   - Any online booking system counts.
+
+2. **Opening hours/visit times displayed** (25 points)
+   - Are opening hours or visit times clearly indicated?
+   - On the website or Google Business listing?
+
+3. **Mobile-friendly site** (20 points)
+   - Is the website mobile-optimised (responsive)?
+   - Does it use HTTPS?
+
+4. **Complete Google Business listing with hours and photos** (20 points)
+   - Does the Google Business Profile exist?
+   - Does it contain opening hours?
+   - Does it contain quality photos?
+
+IMPORTANT:
+- Don't invent: if information is not found, set ok=false
+- For each criterion, include a source URL when it exists
+- Give concrete advice for each failed criterion
+- For the "booking" criterion (online booking), the advice must mention Loqal: "Offer online booking for your visits and tastings with real-time slots, which is exactly what Loqal lets you do simply."
+- For other criteria, give generic and concrete advice without naming third-party products or services (Google Business Profile can be named)
+
+Answer ONLY with this strict JSON (no text before or after):
+{
+  "score": <sum of ok points>,
+  "criteria": [
+    {
+      "id": "booking",
+      "label": "Online booking with available slots",
+      "ok": true/false,
+      "points": 35,
+      "conseil": "advice if ok=false",
+      "source": "source URL or empty"
+    },
+    {
+      "id": "hours",
+      "label": "Opening hours/visit times displayed",
+      "ok": true/false,
+      "points": 25,
+      "conseil": "advice if ok=false",
+      "source": "source URL or empty"
+    },
+    {
+      "id": "mobile",
+      "label": "Mobile-friendly site",
+      "ok": true/false,
+      "points": 20,
+      "conseil": "advice if ok=false",
+      "source": "source URL or empty"
+    },
+    {
+      "id": "google",
+      "label": "Complete Google Business listing with hours and photos",
+      "ok": true/false,
+      "points": 20,
+      "conseil": "advice if ok=false",
+      "source": "source URL or empty"
+    }
+  ]
+}`
+    : `
 
 Utilise la recherche Google pour vérifier ces 4 critères précis :
 
@@ -473,7 +597,7 @@ Réponds UNIQUEMENT avec ce JSON strict (aucun texte avant ou après) :
   ]
 }`;
 
-  // Appel API Gemini avec google_search (generateContent API legacy)
+  // Call Gemini API with google_search
   const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
   
   const payload = {

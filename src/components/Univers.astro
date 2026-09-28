@@ -1,21 +1,25 @@
 ---
 import siteData from '../content/site.json';
 
-const { univers } = siteData;
+interface Props {
+  locale?: 'fr' | 'en';
+}
 
-// Three showcase images
+const { locale = 'fr' } = Astro.props;
+const { univers } = siteData[locale];
+
 const images = [
   {
     src: '/images/univers/visites-cave.webp',
-    alt: 'Visite de cave'
+    alt: locale === 'en' ? 'Cellar tour' : 'Visite de cave'
   },
   {
     src: '/images/univers/degustations.webp',
-    alt: 'Dégustation de vin'
+    alt: locale === 'en' ? 'Wine tasting' : 'Dégustation de vin'
   },
   {
     src: '/images/univers/vendanges.webp',
-    alt: 'Vendanges'
+    alt: locale === 'en' ? 'Harvest' : 'Vendanges'
   },
 ];
 ---

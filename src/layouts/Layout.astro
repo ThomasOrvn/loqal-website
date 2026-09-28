@@ -5,19 +5,33 @@ interface Props {
   title: string;
   description: string;
   image?: string;
+  locale?: 'fr' | 'en';
 }
 
-const { title, description, image = '/logo.png' } = Astro.props;
+const { title, description, image = '/logo.png', locale = 'fr' } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, 'https://loqal.fr');
+
+const currentPath = Astro.url.pathname;
+const alternatePath = locale === 'fr' 
+  ? `/en${currentPath === '/' ? '' : currentPath}`
+  : currentPath.replace(/^\/en/, '') || '/';
+
+const frURL = new URL(locale === 'fr' ? currentPath : alternatePath, 'https://loqal.fr');
+const enURL = new URL(locale === 'en' ? currentPath : `/en${currentPath === '/' ? '' : currentPath}`, 'https://loqal.fr');
 ---
 
 <!doctype html>
-<html lang="fr">
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="/favicon.ico" />
     <link rel="canonical" href={canonicalURL} />
+    
+    <!-- Alternate language links -->
+    <link rel="alternate" hreflang="fr" href={frURL} />
+    <link rel="alternate" hreflang="en" href={enURL} />
+    <link rel="alternate" hreflang="x-default" href={frURL} />
 
     <title>{title}</title>
     <meta name="description" content={description} />

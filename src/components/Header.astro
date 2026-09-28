@@ -1,5 +1,25 @@
 ---
 import siteData from '../content/site.json';
+
+interface Props {
+  locale?: 'fr' | 'en';
+}
+
+const { locale = 'fr' } = Astro.props;
+const currentPath = Astro.url.pathname;
+
+const getLocalePath = (targetLocale: 'fr' | 'en') => {
+  if (targetLocale === 'fr') {
+    return currentPath.replace(/^\/en/, '') || '/';
+  } else {
+    if (currentPath === '/') return '/en/';
+    if (currentPath.startsWith('/en')) return currentPath;
+    return `/en${currentPath}`;
+  }
+};
+
+const frPath = getLocalePath('fr');
+const enPath = getLocalePath('en');
 ---
 
 <header
@@ -7,45 +27,70 @@ import siteData from '../content/site.json';
   class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
 >
   <nav class="container-custom py-4 flex items-center justify-between">
-    <a href="/" class="flex items-center">
-      <img
-        src="/logo.png"
-        alt="Loqal"
-        class="h-8 w-auto transition-opacity duration-300"
-        id="logo"
-      />
-    </a>
+    <!-- Language toggle at top left -->
+    <div class="flex items-center gap-6">
+      <div class="flex items-center gap-1 text-sm font-medium">
+        <a
+          href={frPath}
+          class:list={[
+            "px-2 py-1 rounded transition-colors duration-200",
+            locale === 'fr' ? "text-olive font-semibold" : "text-current opacity-60 hover:opacity-100"
+          ]}
+        >
+          FR
+        </a>
+        <span class="opacity-40">|</span>
+        <a
+          href={enPath}
+          class:list={[
+            "px-2 py-1 rounded transition-colors duration-200",
+            locale === 'en' ? "text-olive font-semibold" : "text-current opacity-60 hover:opacity-100"
+          ]}
+        >
+          EN
+        </a>
+      </div>
+      
+      <a href={locale === 'en' ? '/en/' : '/'} class="flex items-center">
+        <img
+          src="/logo.png"
+          alt="Loqal"
+          class="h-8 w-auto transition-opacity duration-300"
+          id="logo"
+        />
+      </a>
+    </div>
 
     <div class="hidden md:flex items-center gap-6">
       <a
-        href="/#visiteurs"
+        href={`${locale === 'en' ? '/en' : ''}/#visiteurs`}
         class="text-sm font-medium transition-colors duration-200 hover:text-olive"
       >
-        Visiteurs
+        {locale === 'en' ? 'Visitors' : 'Visiteurs'}
       </a>
       <a
-        href="/#professionnels"
+        href={`${locale === 'en' ? '/en' : ''}/#professionnels`}
         class="text-sm font-medium transition-colors duration-200 hover:text-olive"
       >
-        Professionnels
+        {locale === 'en' ? 'Professionals' : 'Professionnels'}
       </a>
       <a
-        href="/#audit"
+        href={`${locale === 'en' ? '/en' : ''}/#audit`}
         class="text-sm font-medium transition-colors duration-200 hover:text-olive"
       >
-        Audit gratuit
+        {locale === 'en' ? 'Free audit' : 'Audit gratuit'}
       </a>
       <a
-        href="/#faq"
+        href={`${locale === 'en' ? '/en' : ''}/#faq`}
         class="text-sm font-medium transition-colors duration-200 hover:text-olive"
       >
         FAQ
       </a>
       <a
-        href="/#liste-attente"
+        href={`${locale === 'en' ? '/en' : ''}/#liste-attente`}
         class="inline-flex items-center px-4 py-2 bg-olive text-ivory text-sm font-medium rounded transition-colors duration-200 hover:bg-ink"
       >
-        Rejoindre
+        {locale === 'en' ? 'Join' : 'Rejoindre'}
       </a>
     </div>
 
@@ -53,7 +98,7 @@ import siteData from '../content/site.json';
     <button
       id="mobile-menu-button"
       class="md:hidden p-2 text-ink transition-colors hover:text-olive"
-      aria-label="Menu"
+      aria-label={locale === 'en' ? 'Menu' : 'Menu'}
     >
       <svg
         class="w-6 h-6"
@@ -79,7 +124,7 @@ import siteData from '../content/site.json';
       <button
         id="mobile-menu-close"
         class="absolute top-6 right-6 p-2 text-ink hover:text-olive"
-        aria-label="Fermer"
+        aria-label={locale === 'en' ? 'Close' : 'Fermer'}
       >
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -92,34 +137,34 @@ import siteData from '../content/site.json';
 
       <nav class="mt-12 flex flex-col gap-6">
         <a
-          href="/#visiteurs"
+          href={`${locale === 'en' ? '/en' : ''}/#visiteurs`}
           class="text-lg font-medium transition-colors duration-200 hover:text-olive mobile-link"
         >
-          Visiteurs
+          {locale === 'en' ? 'Visitors' : 'Visiteurs'}
         </a>
         <a
-          href="/#professionnels"
+          href={`${locale === 'en' ? '/en' : ''}/#professionnels`}
           class="text-lg font-medium transition-colors duration-200 hover:text-olive mobile-link"
         >
-          Professionnels
+          {locale === 'en' ? 'Professionals' : 'Professionnels'}
         </a>
         <a
-          href="/#audit"
+          href={`${locale === 'en' ? '/en' : ''}/#audit`}
           class="text-lg font-medium transition-colors duration-200 hover:text-olive mobile-link"
         >
-          Audit gratuit
+          {locale === 'en' ? 'Free audit' : 'Audit gratuit'}
         </a>
         <a
-          href="/#faq"
+          href={`${locale === 'en' ? '/en' : ''}/#faq`}
           class="text-lg font-medium transition-colors duration-200 hover:text-olive mobile-link"
         >
           FAQ
         </a>
         <a
-          href="/#liste-attente"
+          href={`${locale === 'en' ? '/en' : ''}/#liste-attente`}
           class="inline-flex items-center justify-center px-6 py-3 bg-olive text-ivory font-medium rounded transition-colors duration-200 hover:bg-ink mobile-link"
         >
-          Rejoindre la liste d'attente
+          {locale === 'en' ? 'Join the waitlist' : 'Rejoindre la liste d\'attente'}
         </a>
       </nav>
     </div>
