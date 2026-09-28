@@ -24,27 +24,27 @@ const enPath = getLocalePath('en');
 
 <header
   id="header"
-  class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+  class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 text-ivory"
 >
   <nav class="container-custom py-4 flex items-center justify-between">
     <!-- Language toggle at top left -->
     <div class="flex items-center gap-6">
-      <div class="flex items-center gap-1 text-sm font-medium">
+      <div class="flex items-center gap-1 text-sm">
         <a
           href={frPath}
           class:list={[
-            "px-2 py-1 rounded transition-colors duration-200",
-            locale === 'fr' ? "text-olive font-semibold" : "text-current opacity-60 hover:opacity-100"
+            "lang-toggle px-2 py-1 rounded transition-colors duration-200",
+            locale === 'fr' ? "lang-active" : "lang-inactive"
           ]}
         >
           FR
         </a>
-        <span class="opacity-40">|</span>
+        <span class="lang-separator opacity-40">|</span>
         <a
           href={enPath}
           class:list={[
-            "px-2 py-1 rounded transition-colors duration-200",
-            locale === 'en' ? "text-olive font-semibold" : "text-current opacity-60 hover:opacity-100"
+            "lang-toggle px-2 py-1 rounded transition-colors duration-200",
+            locale === 'en' ? "lang-active" : "lang-inactive"
           ]}
         >
           EN
@@ -55,7 +55,7 @@ const enPath = getLocalePath('en');
         <img
           src="/logo.png"
           alt="Loqal"
-          class="h-8 w-auto transition-opacity duration-300"
+          class="h-8 w-auto transition-all duration-300"
           id="logo"
         />
       </a>
@@ -64,25 +64,25 @@ const enPath = getLocalePath('en');
     <div class="hidden md:flex items-center gap-6">
       <a
         href={`${locale === 'en' ? '/en' : ''}/#visiteurs`}
-        class="text-sm font-medium transition-colors duration-200 hover:text-olive"
+        class="nav-link text-sm font-medium transition-colors duration-200 hover:text-olive"
       >
         {locale === 'en' ? 'Visitors' : 'Visiteurs'}
       </a>
       <a
         href={`${locale === 'en' ? '/en' : ''}/#professionnels`}
-        class="text-sm font-medium transition-colors duration-200 hover:text-olive"
+        class="nav-link text-sm font-medium transition-colors duration-200 hover:text-olive"
       >
         {locale === 'en' ? 'Professionals' : 'Professionnels'}
       </a>
       <a
         href={`${locale === 'en' ? '/en' : ''}/#audit`}
-        class="text-sm font-medium transition-colors duration-200 hover:text-olive"
+        class="nav-link text-sm font-medium transition-colors duration-200 hover:text-olive"
       >
         {locale === 'en' ? 'Free audit' : 'Audit gratuit'}
       </a>
       <a
         href={`${locale === 'en' ? '/en' : ''}/#faq`}
-        class="text-sm font-medium transition-colors duration-200 hover:text-olive"
+        class="nav-link text-sm font-medium transition-colors duration-200 hover:text-olive"
       >
         FAQ
       </a>
@@ -97,7 +97,7 @@ const enPath = getLocalePath('en');
     <!-- Mobile menu button -->
     <button
       id="mobile-menu-button"
-      class="md:hidden p-2 text-ink transition-colors hover:text-olive"
+      class="md:hidden p-2 transition-colors hover:text-olive"
       aria-label={locale === 'en' ? 'Menu' : 'Menu'}
     >
       <svg
@@ -175,28 +175,101 @@ const enPath = getLocalePath('en');
   // Scroll behavior for header
   const header = document.getElementById('header');
   const logo = document.getElementById('logo');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const langToggles = document.querySelectorAll('.lang-toggle');
+  const langSeparator = document.querySelector('.lang-separator');
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
   
   let lastScroll = 0;
-  const heroHeight = 600; // Approximate hero height
+  const heroHeight = 600;
 
-  window.addEventListener('scroll', () => {
+  function updateHeaderStyle() {
     const currentScroll = window.scrollY;
 
     if (currentScroll > heroHeight) {
-      header?.classList.add('bg-ivory', 'shadow-md');
+      // Scrolled: white background, dark text
+      header?.classList.add('bg-ivory', 'shadow-md', 'text-ink');
       header?.classList.remove('text-ivory');
-      header?.classList.add('text-ink');
+      
+      // Logo: normal (dark)
+      logo?.classList.remove('brightness-0', 'invert');
+      
+      // Language toggle: active in ink, inactive in warmgrey
+      langToggles.forEach(toggle => {
+        if (toggle.classList.contains('lang-active')) {
+          toggle.classList.remove('text-ivory', 'opacity-100');
+          toggle.classList.add('text-ink', 'font-medium');
+        } else {
+          toggle.classList.remove('text-ivory', 'opacity-60');
+          toggle.classList.add('text-warmgrey');
+        }
+      });
+      
+      // Separator
+      if (langSeparator) {
+        langSeparator.classList.remove('text-ivory');
+        langSeparator.classList.add('text-warmgrey');
+      }
+      
+      // Nav links: ink
+      navLinks.forEach(link => {
+        link.classList.remove('text-ivory');
+        link.classList.add('text-ink');
+      });
+      
+      // Mobile menu button: ink
+      if (mobileMenuButton) {
+        mobileMenuButton.classList.remove('text-ivory');
+        mobileMenuButton.classList.add('text-ink');
+      }
     } else {
-      header?.classList.remove('bg-ivory', 'shadow-md');
+      // At top: transparent, light text
+      header?.classList.remove('bg-ivory', 'shadow-md', 'text-ink');
       header?.classList.add('text-ivory');
-      header?.classList.remove('text-ink');
+      
+      // Logo: inverted (light)
+      logo?.classList.add('brightness-0', 'invert');
+      
+      // Language toggle: active in ivory, inactive in ivory 60%
+      langToggles.forEach(toggle => {
+        if (toggle.classList.contains('lang-active')) {
+          toggle.classList.remove('text-ink', 'text-warmgrey');
+          toggle.classList.add('text-ivory', 'font-medium', 'opacity-100');
+        } else {
+          toggle.classList.remove('text-ink', 'text-warmgrey', 'font-medium');
+          toggle.classList.add('text-ivory', 'opacity-60');
+        }
+      });
+      
+      // Separator
+      if (langSeparator) {
+        langSeparator.classList.remove('text-warmgrey');
+        langSeparator.classList.add('text-ivory');
+      }
+      
+      // Nav links: ivory
+      navLinks.forEach(link => {
+        link.classList.remove('text-ink');
+        link.classList.add('text-ivory');
+      });
+      
+      // Mobile menu button: ivory
+      if (mobileMenuButton) {
+        mobileMenuButton.classList.remove('text-ink');
+        mobileMenuButton.classList.add('text-ivory');
+      }
     }
 
     lastScroll = currentScroll;
-  });
+  }
+
+  // Initial call
+  updateHeaderStyle();
+  
+  // On scroll
+  window.addEventListener('scroll', updateHeaderStyle);
 
   // Mobile menu
-  const mobileMenuButton = document.getElementById('mobile-menu-button');
   const mobileMenu = document.getElementById('mobile-menu');
   const mobileMenuClose = document.getElementById('mobile-menu-close');
   const mobileLinks = document.querySelectorAll('.mobile-link');
@@ -223,16 +296,13 @@ const enPath = getLocalePath('en');
 </script>
 
 <style>
-  #header.text-ivory a:not(.bg-olive) {
-    color: rgba(240, 239, 234, 0.9);
+  /* Language toggle hover effects */
+  .lang-toggle:hover {
+    opacity: 1 !important;
   }
   
-  #header.text-ivory a:not(.bg-olive):hover {
-    color: rgba(240, 239, 234, 1);
-  }
-
-  /* Light logo version on dark background */
-  #header.text-ivory #logo {
-    filter: brightness(0) invert(1);
+  /* Ensure active language is always visible */
+  .lang-active {
+    font-weight: 500;
   }
 </style>
